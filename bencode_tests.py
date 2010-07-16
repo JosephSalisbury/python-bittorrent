@@ -57,5 +57,10 @@ class Decode_String(unittest.TestCase):
 		
 	def test5(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_string, list(":::"))
+		
+class Decode_List(unittest.TestCase):
+	def test0(self):
+		self.n = bencode.decode_list(list("l4:spam4:eggse"))
+		self.assertEqual(self.n, ["spam", "eggs"])
 	
 unittest.main()

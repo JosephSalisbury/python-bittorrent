@@ -25,7 +25,7 @@ def decode_int(data):
 		if t[0] == "0":
 			raise DecodeError("Malformed expression, leading zeros")
 	
-	return int(t)				# Integerise it
+	return int(t)			# Integerise it
 
 # Decode a string
 def decode_string(data):
