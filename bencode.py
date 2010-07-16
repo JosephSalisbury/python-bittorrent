@@ -37,3 +37,14 @@ def decode_string(data):
 		else:
 			num.append(x)
 	n = reduce(lambda x, y: x + y, num)
+	n = int(n)
+	
+	# Work out how many digits are at the start
+	lenNum = 1	# The number of digits (and the colon)
+	for x in data:
+		if x.isdigit() == True:
+			lenNum += 1
+		else:
+			break
+	
+	print data[lenNum:n+lenNum]
