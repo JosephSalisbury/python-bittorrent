@@ -47,4 +47,6 @@ def decode_string(data):
 		else:
 			break
 	
-	print data[lenNum:n+lenNum]
+	t = reduce(lambda x, y: x + y, data[lenNum:n+lenNum])
+	
+	return t

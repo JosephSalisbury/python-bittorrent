@@ -27,5 +27,19 @@ class Decode_Int(unittest.TestCase):
 
 	def test5(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_int, list("googamoosh"))
-
+	
+class Decode_String(unittest.TestCase):
+	# Check decode works
+	def test0(self):
+		self.n = bencode.decode_string(list("4:spam"))
+		self.assertEqual(self.n, "spam")
+			
+	def test1(self):
+		self.n = bencode.decode_string(list("10:googamoosh"))
+		self.assertEqual(self.n, "googamoosh")
+		
+	def test2(self):
+		self.n = bencode.decode_string(list("9:eggandham"))
+		self.assertEqual(self.n, "eggandham")
+	
 unittest.main()
