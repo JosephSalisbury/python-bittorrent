@@ -27,6 +27,10 @@ class Decode_Int(unittest.TestCase):
 
 	def test5(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_int, list("googamoosh"))
+		
+	# Check against leading zeros
+	def test6(self):
+		self.assertRaises(bencode.DecodeError, bencode.decode_int, list("i04e"))
 	
 class Decode_String(unittest.TestCase):
 	# Check decode works
