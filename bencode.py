@@ -21,3 +21,19 @@ def decode_int(data):
 	t = reduce(lambda x, y: x + y, data[1:end])
 
 	return int(t)				# Integerise it
+
+# Decode a string
+def decode_string(data):
+	try:
+		assert data[0].isdigit() == True
+	except AssertionError:
+		raise DecodeError("Badly formed expression.")
+
+	# Work out how long the string is, as the number could be tokened
+	num = []
+	for x in data:
+		if x == ":":
+			break
+		else:
+			num.append(x)
+	n = reduce(lambda x, y: x + y, num)
