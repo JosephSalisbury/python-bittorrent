@@ -21,9 +21,8 @@ def decode_int(data):
 	t = data[1:end]
 
 	# Quick check for leading zeros, which are not allowed
-	if len(t) > 1:
-		if t[0] == "0":
-			raise DecodeError("Malformed expression, leading zeros")
+	if len(t) > 1 and t[0] == "0":
+		raise DecodeError("Malformed expression, leading zeros")
 	
 	return int(t)			# Integerise it
 
