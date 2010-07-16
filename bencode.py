@@ -17,8 +17,8 @@ def decode_int(data):
 	except ValueError:
 		raise DecodeError("Cannot find end of expression.")
 
-	# Collapse all the tokens together
-	t = reduce(lambda x, y: x + y, data[1:end])
+	# Remove the substring we want
+	t = data[1:end]
 
 	# Quick check for leading zeros, which are not allowed
 	if len(t) > 1:
@@ -48,6 +48,21 @@ def decode_string(data):
 	n = int(reduce(lambda x, y: x + y, num))
 	
 	# The reduction of the string we want
-	t = reduce(lambda x, y: x + y, data[lenNum:n+lenNum])
+	t = data[lenNum:n+lenNum]
 	
 	return t
+		
+# Decode a list
+def decode_list(data):
+	try:
+		assert data[0] == "l"
+	except AssertionError:
+		raise DecodeError("Badly formed list expression.")
+	
+	t = data
+	list = []
+	
+	if t[1].isdigit():
+		list.append( decode_string(data[1:]) )
+	
+	return list
