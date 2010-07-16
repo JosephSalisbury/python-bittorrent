@@ -28,25 +28,21 @@ def decode_string(data):
 		assert data[0].isdigit() == True
 	except AssertionError:
 		raise DecodeError("Badly formed expression.")
-
-	# Work out how long the string is, as the number could be tokened
-	num = []
-	for x in data:
-		if x == ":":
-			break
-		else:
-			num.append(x)
-	n = reduce(lambda x, y: x + y, num)
-	n = int(n)
 	
-	# Work out how many digits are at the start
-	lenNum = 1	# The number of digits (and the colon)
+	# Spin through, collect the number tokens, and count them
+	num = []	# The tokens of the number
+	lenNum = 1	# How many digits in the number
 	for x in data:
-		if x.isdigit() == True:
+		if x.isdigit():
+			num.append(x)
 			lenNum += 1
 		else:
 			break
+		
+	# Reduce the number tokens into one integer
+	n = int(reduce(lambda x, y: x + y, num))
 	
+	# The reduction of the string we want
 	t = reduce(lambda x, y: x + y, data[lenNum:n+lenNum])
 	
 	return t
