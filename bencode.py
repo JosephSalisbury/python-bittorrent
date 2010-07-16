@@ -20,6 +20,11 @@ def decode_int(data):
 	# Collapse all the tokens together
 	t = reduce(lambda x, y: x + y, data[1:end])
 
+	# Quick check for leading zeros, which are not allowed
+	if len(t) > 1:
+		if t[0] == "0":
+			raise DecodeError("Malformed expression, leading zeros")
+	
 	return int(t)				# Integerise it
 
 # Decode a string
