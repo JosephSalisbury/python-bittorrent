@@ -20,4 +20,4 @@ def decode_int(data):
 	# Collapse all the tokens together
 	t = reduce(lambda x, y: x + y, data[1:end])
 
-	return int(t)			# Integerise it
+	return int(t)				# Integerise it
