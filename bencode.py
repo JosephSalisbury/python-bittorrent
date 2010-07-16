@@ -9,9 +9,15 @@ def decode(data):
 def decode_dict(data):
 	assert data[0] == "d"	# Check it's a dictionary
 
-	data.pop()
+	# data.pop()
+	# print data[:100]
 
-	print data[:100]
+# Decode an integer
+def decode_int(data):
+	assert data[0] == "i"	# Check it's an integer
+	end = data.index('e')
+
+	return reduce(lambda x, y: x + y, data[1:end])
 
 # Work out what to decode, then dispatch it
 def main(data):
