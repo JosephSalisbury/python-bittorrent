@@ -50,5 +50,8 @@ class Decode_String(unittest.TestCase):
 	# Check we raise exceptions for mal-formed expressions
 	def test4(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_string, list("nonumber"))
+		
+	def test5(self):
+		self.assertRaises(bencode.DecodeError, bencode.decode_string, list(":::"))
 	
 unittest.main()
