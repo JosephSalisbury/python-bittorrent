@@ -51,21 +51,6 @@ def decode_string(data):
 
 	return t
 
-# Decode a list
-def decode_list(data):
-	try:
-		assert data[0] == "l"
-	except AssertionError:
-		raise DecodeError("Badly formed list expression.")
-
-	t = data
-	list = []
-
-	if t[1].isdigit():
-		list.append( decode_string(data[1:]) )
-
-	return list
-
 # Dispatches data to appropriate decode_* function
 def decode(data):
 	if data[0] == "i":
