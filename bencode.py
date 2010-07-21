@@ -72,3 +72,5 @@ def decode(data):
 		return decode_int(data)
 	elif data[0].isdigit():
 		return decode_string(data)
+	else:
+		raise DecodeError("Badly formed expression.")
