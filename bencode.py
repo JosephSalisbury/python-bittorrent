@@ -23,6 +23,8 @@ def encode_int(num):
 	except AssertionError:
 		raise EncodeError("Malformed expression.")
 
+	return "i" + str(num) + "e"
+
 # Decode an integer
 def decode_int(data):
 	try:
