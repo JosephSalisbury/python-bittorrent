@@ -78,6 +78,15 @@ def decode_string(data):
 
 	return t
 
+# Dispatches data to appropriate encode function
+def encode(data):
+	if type(data) == int:
+		return encode_int(data)
+	elif type(data) == str:
+		return encode_string(data)
+	else:
+		raise EncodeError("Unknown data type")
+
 # Dispatches data to appropriate decode_* function
 def decode(data):
 	if data[0] == "i":
