@@ -117,11 +117,15 @@ class Encode_List(unittest.TestCase):
 		self.n = bencode.encode_list(["one", 1])
 		self.assertEquals(self.n, "l3:onei1ee")
 
-	# Check exceptions are raised
 	def test3(self):
+		self.n = bencode.encode_list([[1, 2], [3, 4]])
+		self.assertEquals(self.n, "lli1ei2eeli3ei4eee")
+
+	# Check exceptions are raised
+	def test4(self):
 		self.assertRaises(bencode.EncodeError, bencode.encode_list, "nonumber")
 
-	def test4(self):
+	def test5(self):
 		self.assertRaises(bencode.EncodeError, bencode.encode_list, "400")
 
 class Encode(unittest.TestCase):
