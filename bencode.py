@@ -23,7 +23,7 @@ def decode_int(data):
 	# Quick check for leading zeros, which are not allowed
 	if len(t) > 1 and t[0] == "0":
 		raise DecodeError("Malformed expression, leading zeros")
-	
+
 	return int(t)			# Integerise it
 
 # Decode a string
@@ -32,7 +32,7 @@ def decode_string(data):
 		assert data[0].isdigit() == True
 	except AssertionError:
 		raise DecodeError("Badly formed expression.")
-	
+
 	# Spin through, collect the number tokens, and count them
 	num = []	# The tokens of the number
 	lenNum = 1	# How many digits in the number
@@ -42,26 +42,33 @@ def decode_string(data):
 			lenNum += 1
 		else:
 			break
-		
+
 	# Reduce the number tokens into one integer
 	n = int(reduce(lambda x, y: x + y, num))
-	
+
 	# The reduction of the string we want
 	t = data[lenNum:n+lenNum]
-	
+
 	return t
-		
+
 # Decode a list
 def decode_list(data):
 	try:
 		assert data[0] == "l"
 	except AssertionError:
 		raise DecodeError("Badly formed list expression.")
-	
+
 	t = data
 	list = []
-	
+
 	if t[1].isdigit():
 		list.append( decode_string(data[1:]) )
-	
+
 	return list
+
+# Dispatches data to appropriate decode_* function
+def decode(data):
+	if data[0] == "i":
+		return decode_int(data)
+	elif data[0].isdigit():
+		return decode_string(data)
