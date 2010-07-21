@@ -44,6 +44,15 @@ def decode_int(data):
 
 	return int(t)			# Integerise it
 
+# Encode a string
+def encode_string(data):
+	try:
+		assert type(data) == str
+	except AssertionError:
+		raise EncodeError("Malformed expression.")
+
+	return str(len(data)) + ":" + data
+
 # Decode a string
 def decode_string(data):
 	try:
