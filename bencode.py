@@ -46,7 +46,7 @@ def decode_string(data):
 	# Reduce the number tokens into one integer
 	n = int(reduce(lambda x, y: x + y, num))
 
-	# The reduction of the string we want
+	# The subsection of the string we want
 	t = data[lenNum:n+lenNum]
 
 	return t
