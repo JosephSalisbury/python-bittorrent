@@ -105,7 +105,7 @@ def encode_dict(data):
 
 	temp = []
 	for key in data.keys():
-		temp.append(encode(key))
+		temp.append(encode_string(key))	# Keys must be strings
 		temp.append(encode(data[key]))
 
 	return "d" + collapse(temp) + "e"

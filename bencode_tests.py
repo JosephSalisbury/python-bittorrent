@@ -128,6 +128,26 @@ class Encode_List(unittest.TestCase):
 	def test5(self):
 		self.assertRaises(bencode.EncodeError, bencode.encode_list, "400")
 
+class Encode_Dict(unittest.TestCase):
+	# Check encode works
+	def test0(self):
+		self.n = bencode.encode_dict({"cow":"moo", "spam":"eggs"})
+		self.assertEquals(self.n, "d3:cow3:moo4:spam4:eggse")
+
+	def test1(self):
+		self.n = bencode.encode_dict({"3": "three"})
+		self.assertEquals(self.n, "d1:35:threee")
+
+	def test2(self):
+		self.n = bencode.encode_dict({'spam': ['a', 'b']})
+		self.assertEquals(self.n, "d4:spaml1:a1:bee")
+
+	def test3(self):
+		self.assertRaises(bencode.EncodeError, bencode.encode_dict, "notadictionary")
+
+	def test4(self):
+		self.assertRaises(bencode.EncodeError, bencode.encode_dict, 456)
+
 class Encode(unittest.TestCase):
 	# Check encode works, on ints
 	def test0(self):
