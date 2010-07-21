@@ -150,6 +150,10 @@ class Encode(unittest.TestCase):
 		self.n = bencode.encode("eggandham")
 		self.assertEqual(self.n, "9:eggandham")
 
+	def test5(self):
+		self.n = bencode.encode("jacky")
+		self.assertEqual(self.n, "5:jacky")
+
 class Decode(unittest.TestCase):
 	# Check decode works
 	def test0(self):
