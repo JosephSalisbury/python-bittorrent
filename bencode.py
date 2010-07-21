@@ -78,6 +78,19 @@ def decode_string(data):
 
 	return t
 
+# Encode a list
+def encode_list(data):
+	try:
+		assert type(data) == list
+	except AssertionError:
+		raise EncodeError("Malformed expression.")
+
+	temp = []
+	for item in data:
+		temp.append(encode(item))
+
+	return "l" + reduce(lambda x, y: x + y, temp) + "e"
+
 # Dispatches data to appropriate encode function
 def encode(data):
 	if type(data) == int:
