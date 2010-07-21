@@ -118,6 +118,8 @@ def encode(data):
 		return encode_string(data)
 	elif type(data) == list:
 		return encode_list(data)
+	elif type(data) == dict:
+		return encode_dict(data)
 	else:
 		raise EncodeError("Unknown data type")
 
