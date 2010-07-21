@@ -143,9 +143,14 @@ class Encode_Dict(unittest.TestCase):
 		self.assertEquals(self.n, "d4:spaml1:a1:bee")
 
 	def test3(self):
+		self.n = bencode.encode_dict({"sub":{"foo":"bar"}})
+		self.assertEquals(self.n, "d3:subd3:foo3:baree")
+
+	# Check exceptions are raised
+	def test4(self):
 		self.assertRaises(bencode.EncodeError, bencode.encode_dict, "notadictionary")
 
-	def test4(self):
+	def test5(self):
 		self.assertRaises(bencode.EncodeError, bencode.encode_dict, 456)
 
 class Encode(unittest.TestCase):
