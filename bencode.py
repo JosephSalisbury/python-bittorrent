@@ -75,7 +75,7 @@ def decode_string(data):
 		else:
 			break
 
-	# Reduce the number tokens into one integer
+	# Reduce the number characters into one string, then integerise it
 	n = int(collapse(num))
 
 	# The subsection of the string we want
