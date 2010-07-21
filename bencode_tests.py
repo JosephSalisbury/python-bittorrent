@@ -156,6 +156,17 @@ class Encode(unittest.TestCase):
 		self.assertEqual(self.n, "5:jacky")
 
 	# Check encode works on lists
+	def test6(self):
+		self.n = bencode.encode(["spam", "eggs"])
+		self.assertEquals(self.n, "l4:spam4:eggse")
+
+	def test7(self):
+		self.n = bencode.encode([1, 2, 3])
+		self.assertEquals(self.n, "li1ei2ei3ee")
+
+	def test8(self):
+		self.n = bencode.encode([[1, 2], [3, 4]])
+		self.assertEquals(self.n, "lli1ei2eeli3ei4eee")
 
 class Decode(unittest.TestCase):
 	# Check decode works
