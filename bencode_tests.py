@@ -4,6 +4,19 @@
 import unittest
 import bencode
 
+class Collapse(unittest.TestCase):
+	# Check collapse works
+	def test0(self):
+		self.n = bencode.collapse(["f", "o", "o"])
+		self.assertEqual(self.n, "foo")
+
+	def test1(self):
+		self.n = bencode.collapse(["1", "2", "3"])
+		self.assertEqual(self.n, "123")
+
+	def test2(self):
+		self.assertRaises(TypeError, bencode.collapse, [1, "a", True])
+
 class Encode_Int(unittest.TestCase):
 	# Check encode works
 	def test0(self):
