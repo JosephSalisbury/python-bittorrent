@@ -1,11 +1,27 @@
 # bencode.py -- deals with bencoding
 
+import types
+
+# Raised if an error occurs encoding.
+class EncodeError(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
+
 # Raised if an error occurs decoding, typically malformed expressions
 class DecodeError(Exception):
 	def __init__(self, value):
 		self.value = value
 	def __str__(self):
 		return repr(self.value)
+
+# Encode an integer
+def encode_int(num):
+	try:
+		assert type(num) == int
+	except AssertionError:
+		raise EncodeError("Malformed expression.")
 
 # Decode an integer
 def decode_int(data):
