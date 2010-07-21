@@ -129,7 +129,7 @@ class Encode_List(unittest.TestCase):
 		self.assertRaises(bencode.EncodeError, bencode.encode_list, "400")
 
 class Encode(unittest.TestCase):
-	# Check encode works
+	# Check encode works, on ints
 	def test0(self):
 		self.n = bencode.encode(2)
 		self.assertEqual(self.n, "i2e")
@@ -142,6 +142,7 @@ class Encode(unittest.TestCase):
 		self.n = bencode.encode(-9)
 		self.assertEqual(self.n, "i-9e")
 
+	# Check encode works on strings
 	def test3(self):
 		self.n = bencode.encode("spam")
 		self.assertEqual(self.n, "4:spam")
@@ -153,6 +154,8 @@ class Encode(unittest.TestCase):
 	def test5(self):
 		self.n = bencode.encode("jacky")
 		self.assertEqual(self.n, "5:jacky")
+
+	# Check encode works on lists
 
 class Decode(unittest.TestCase):
 	# Check decode works
