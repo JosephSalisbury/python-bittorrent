@@ -97,6 +97,8 @@ def encode(data):
 		return encode_int(data)
 	elif type(data) == str:
 		return encode_string(data)
+	elif type(data) == list:
+		return encode_list(data)
 	else:
 		raise EncodeError("Unknown data type")
 
