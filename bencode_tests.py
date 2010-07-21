@@ -4,6 +4,20 @@
 import unittest
 import bencode
 
+class Encode_Int(unittest.TestCase):
+	# Check encode works
+	def test0(self):
+		self.n = bencode.encode_int(2)
+		self.assertEqual(self.n, "i2e")
+
+	def test1(self):
+		self.n = bencode.encode_int(0)
+		self.assertEqual(self.n, "i0e")
+
+	def test2(self):
+		self.n = bencode.encode_int(456)
+		self.assertEqual(self.n, "i456e")
+
 class Decode_Int(unittest.TestCase):
 	# Check decode works
 	def test0(self):
