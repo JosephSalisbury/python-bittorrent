@@ -18,6 +18,16 @@ class Encode_Int(unittest.TestCase):
 		self.n = bencode.encode_int(456)
 		self.assertEqual(self.n, "i456e")
 
+	# Check exceptions are raised for bad expressions
+	def test3(self):
+		self.assertRaises(bencode.EncodeError, bencode.encode_int, "459e")
+
+	def test4(self):
+		self.assertRaises(bencode.EncodeError, bencode.encode_int, "i459")
+
+	def test5(self):
+		self.assertRaises(bencode.EncodeError, bencode.encode_int, "googamoosh")
+
 class Decode_Int(unittest.TestCase):
 	# Check decode works
 	def test0(self):
