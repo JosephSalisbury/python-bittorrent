@@ -96,6 +96,10 @@ def encode_list(data):
 
 	return "l" + collapse(temp) + "e"
 
+# Decode a list
+def decode_list(data):
+	pass
+
 # Encode a dictionary
 def encode_dict(data):
 	try:
@@ -109,6 +113,10 @@ def encode_dict(data):
 		temp.append(encode(data[key]))
 
 	return "d" + collapse(temp) + "e"
+
+# Decode a dictionary
+def decode_dict(data):
+	pass
 
 # Dispatches data to appropriate encode function
 def encode(data):
