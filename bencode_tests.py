@@ -27,40 +27,35 @@ class Decode_Int(unittest.TestCase):
 
 	def test5(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_int, "googamoosh")
-		
+
 	# Check against leading zeros
 	def test6(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i04e")
-	
+
 class Decode_String(unittest.TestCase):
 	# Check decode works
 	def test0(self):
 		self.n = bencode.decode_string("4:spam")
 		self.assertEqual(self.n, "spam")
-			
+
 	def test1(self):
 		self.n = bencode.decode_string("10:googamoosh")
 		self.assertEqual(self.n, "googamoosh")
-		
+
 	def test2(self):
 		self.n = bencode.decode_string("9:eggandham")
 		self.assertEqual(self.n, "eggandham")
-		
+
 	# Check we don't take too much
 	def test3(self):
 		self.n = bencode.decode_string("5:twatstick")
 		self.assertEqual(self.n, "twats")
-		
+
 	# Check we raise exceptions for mal-formed expressions
 	def test4(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_string, "nonumber")
-		
+
 	def test5(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_string, ":::")
-		
-class Decode_List(unittest.TestCase):
-	def test0(self):
-		self.n = bencode.decode_list("l4:spam4:eggse")
-		self.assertEqual(self.n, ["spam", "eggs"])
-	
+
 unittest.main()
