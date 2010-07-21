@@ -108,7 +108,7 @@ def encode_dict(data):
 		raise EncodeError("Malformed expression.")
 
 	temp = []
-	for key in data.keys():
+	for key in sorted(data.keys()):
 		temp.append(encode_string(key))	# Keys must be strings
 		temp.append(encode(data[key]))
 
