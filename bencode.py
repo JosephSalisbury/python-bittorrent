@@ -2,6 +2,11 @@
 
 import types
 
+# Given a homogenous list l, returns the items of that list concatenated together.
+# Eg: collapse(["f", "o", "o"]) == "foo"
+def collapse(l):
+	return reduce(lambda x, y: x + y, l)
+
 # Raised if an error occurs encoding.
 class EncodeError(Exception):
 	def __init__(self, value):
@@ -71,7 +76,7 @@ def decode_string(data):
 			break
 
 	# Reduce the number tokens into one integer
-	n = int(reduce(lambda x, y: x + y, num))
+	n = int(collapse(num))
 
 	# The subsection of the string we want
 	t = data[lenNum:n+lenNum]
@@ -89,7 +94,7 @@ def encode_list(data):
 	for item in data:
 		temp.append(encode(item))
 
-	return "l" + reduce(lambda x, y: x + y, temp) + "e"
+	return "l" + collapse(temp) + "e"
 
 # Dispatches data to appropriate encode function
 def encode(data):
