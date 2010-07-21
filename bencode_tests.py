@@ -56,6 +56,27 @@ class Decode_Int(unittest.TestCase):
 	def test6(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i04e")
 
+class Encode_String(unittest.TestCase):
+	# Check encode works
+	def test0(self):
+		self.n = bencode.encode_string("spam")
+		self.assertEqual(self.n, "4:spam")
+
+	def test1(self):
+		self.n = bencode.encode_string("googamoosh")
+		self.assertEqual(self.n, "10:googamoosh")
+
+	def test2(self):
+		self.n = bencode.encode_string("eggandham")
+		self.assertEqual(self.n, "9:eggandham")
+
+	# Check exceptions are properly raised
+	def test3(self):
+		self.assertRaises(bencode.EncodeError, bencode.encode_string, 5)
+
+	def test4(self):
+		self.assertRaises(bencode.EncodeError, bencode.encode_string, 100)
+
 class Decode_String(unittest.TestCase):
 	# Check decode works
 	def test0(self):
