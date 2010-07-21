@@ -58,4 +58,29 @@ class Decode_String(unittest.TestCase):
 	def test5(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_string, ":::")
 
+class Decode(unittest.TestCase):
+	# Check decode works
+	def test0(self):
+		self.n = bencode.decode("i2e")
+		self.assertEqual(self.n, 2)
+
+	def test1(self):
+		self.n = bencode.decode("i0e")
+		self.assertEqual(self.n, 0)
+
+	def test2(self):
+		self.n = bencode.decode("4:spam")
+		self.assertEqual(self.n, "spam")
+
+	def test3(self):
+		self.n = bencode.decode("9:eggandham")
+		self.assertEqual(self.n, "eggandham")
+
+	# Check exceptions are correctly raised
+	def test4(self):
+		self.assertRaises(bencode.DecodeError, bencode.decode, "i459")
+
+	def test5(self):
+		self.assertRaises(bencode.DecodeError, bencode.decode, "nonumber")
+
 unittest.main()
