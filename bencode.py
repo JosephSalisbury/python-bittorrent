@@ -96,6 +96,20 @@ def encode_list(data):
 
 	return "l" + collapse(temp) + "e"
 
+# Encode a dictionary
+def encode_dict(data):
+	try:
+		assert type(data) == dict
+	except AssertionError:
+		raise EncodeError("Malformed expression.")
+
+	temp = []
+	for key in data.keys():
+		temp.append(encode(key))
+		temp.append(encode(data[key]))
+
+	return "d" + collapse(temp) + "e"
+
 # Dispatches data to appropriate encode function
 def encode(data):
 	if type(data) == int:
