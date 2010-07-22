@@ -16,6 +16,29 @@ class Collapse(unittest.TestCase):
 		""" Test a TypeError is raised when concating different types. """
 		self.assertRaises(TypeError, bencode.collapse, [1, "a", True])
 
+class Ben_Type(unittest.TestCase):
+	""" Check the function ben_type() works correctly. """
+
+	def test_integers(self):
+		""" Test that integers are correctly identified. """
+		self.n = bencode.ben_type("i1e")
+		self.assertEqual(self.n, "int")
+
+	def test_string(self):
+		""" Test that strings are correctly identified. """
+		self.n = bencode.ben_type("4:test")
+		self.assertEqual(self.n, "str")
+
+	def test_list(self):
+		""" Test that lists are correctly identified. """
+		self.n = bencode.ben_type("l4:teste")
+		self.assertEqual(self.n, "list")
+
+	def test_dict(self):
+		""" Test that dictionaries are correctly identified. """
+		self.n = bencode.ben_type("d3:key5:valuee")
+		self.assertEqual(self.n, "dict")
+
 class Encode_Int(unittest.TestCase):
 	"""  Check the function encode_int() works correctly. """
 
