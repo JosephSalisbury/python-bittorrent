@@ -50,7 +50,7 @@ def decode_int(data):
 	return int(t)			# Integerise it
 
 # Encode a string
-def encode_string(data):
+def encode_str(data):
 	try:
 		assert type(data) == str
 	except AssertionError:
@@ -59,7 +59,7 @@ def encode_string(data):
 	return str(len(data)) + ":" + data
 
 # Decode a string
-def decode_string(data):
+def decode_str(data):
 	try:
 		assert data[0].isdigit() == True
 	except AssertionError:
@@ -108,7 +108,7 @@ def encode_dict(data):
 
 	temp = []
 	for key in sorted(data.keys()):
-		temp.append(encode_string(key))	# Keys must be strings
+		temp.append(encode_str(key))	# Keys must be strings
 		temp.append(encode(data[key]))
 
 	return "d" + collapse(temp) + "e"
@@ -122,7 +122,7 @@ def encode(data):
 	if type(data) == int:
 		return encode_int(data)
 	elif type(data) == str:
-		return encode_string(data)
+		return encode_str(data)
 	elif type(data) == list:
 		return encode_list(data)
 	elif type(data) == dict:
@@ -135,6 +135,6 @@ def decode(data):
 	if data[0] == "i":
 		return decode_int(data)
 	elif data[0].isdigit():
-		return decode_string(data)
+		return decode_str(data)
 	else:
 		raise DecodeError("Unknown data type.")

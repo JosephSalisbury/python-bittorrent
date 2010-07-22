@@ -69,52 +69,52 @@ class Decode_Int(unittest.TestCase):
 	def test6(self):
 		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i04e")
 
-class Encode_String(unittest.TestCase):
+class Encode_Str(unittest.TestCase):
 	# Check encode works
 	def test0(self):
-		self.n = bencode.encode_string("spam")
+		self.n = bencode.encode_str("spam")
 		self.assertEqual(self.n, "4:spam")
 
 	def test1(self):
-		self.n = bencode.encode_string("googamoosh")
+		self.n = bencode.encode_str("googamoosh")
 		self.assertEqual(self.n, "10:googamoosh")
 
 	def test2(self):
-		self.n = bencode.encode_string("eggandham")
+		self.n = bencode.encode_str("eggandham")
 		self.assertEqual(self.n, "9:eggandham")
 
 	# Check exceptions are properly raised
 	def test3(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_string, 5)
+		self.assertRaises(bencode.EncodeError, bencode.encode_str, 5)
 
 	def test4(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_string, 100)
+		self.assertRaises(bencode.EncodeError, bencode.encode_str, 100)
 
-class Decode_String(unittest.TestCase):
+class Decode_Str(unittest.TestCase):
 	# Check decode works
 	def test0(self):
-		self.n = bencode.decode_string("4:spam")
+		self.n = bencode.decode_str("4:spam")
 		self.assertEqual(self.n, "spam")
 
 	def test1(self):
-		self.n = bencode.decode_string("10:googamoosh")
+		self.n = bencode.decode_str("10:googamoosh")
 		self.assertEqual(self.n, "googamoosh")
 
 	def test2(self):
-		self.n = bencode.decode_string("9:eggandham")
+		self.n = bencode.decode_str("9:eggandham")
 		self.assertEqual(self.n, "eggandham")
 
 	# Check we don't take too much
 	def test3(self):
-		self.n = bencode.decode_string("5:twatstick")
+		self.n = bencode.decode_str("5:twatstick")
 		self.assertEqual(self.n, "twats")
 
 	# Check we raise exceptions for mal-formed expressions
 	def test4(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode_string, "nonumber")
+		self.assertRaises(bencode.DecodeError, bencode.decode_str, "nonumber")
 
 	def test5(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode_string, ":::")
+		self.assertRaises(bencode.DecodeError, bencode.decode_str, ":::")
 
 class Encode_List(unittest.TestCase):
 	# Check encode works
