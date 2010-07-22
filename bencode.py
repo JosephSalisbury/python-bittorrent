@@ -140,6 +140,9 @@ def encode_list(data):
 	except AssertionError:
 		raise EncodeError("Malformed expression.")
 
+	if data == []:
+		return "le"
+
 	temp = []
 	for item in data:
 		temp.append(encode(item))
@@ -152,6 +155,9 @@ def decode_list(data):
 		assert ben_type(data) == "list"
 	except AssertionError:
 		raise DecodeError("Malformed expression.")
+
+	if data == "le":
+		return []
 
 	data = data[1:-1]	# Remove the list annotation
 
