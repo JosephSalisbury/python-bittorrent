@@ -193,6 +193,33 @@ class Encode_List(unittest.TestCase):
 		""" Test that an exception is raised when given a string. """
 		self.assertRaises(bencode.EncodeError, bencode.encode_list, "test")
 
+class Decode_List(unittest.TestCase):
+	""" Check the function decode_list() works correctly. """
+
+	def test_simple_list(self):
+		""" Test that a one item list is decoded correctly. """
+		self.n = bencode.decode_list("li1ee")
+		self.assertEquals(self.n, [1])
+
+	def test_longer_list(self):
+		""" Test that a longer list is decoded correctly. """
+		self.n = bencode.decode_list("li1ei2ei3ee")
+		self.assertEquals(self.n, [1, 2, 3])
+
+	def test_mixed_list(self):
+		""" Test that a mixed list is decoded correctly. """
+		self.n = bencode.decode_list("li1e3:onee")
+		self.assertEquals(self.n, [1, "one"])
+
+	def test_nested_list(self):
+		""" Test that a nested list is decoded correctly. """
+		self.n = bencode.decode_list("lli1ei2eeli3ei4eee")
+		self.assertEquals(self.n, [[1, 2], [3, 4]])
+
+	def test_exception_on_string(self):
+		""" Test that an exception is raised when given a string. """
+		self.assertRaises(bencode.DecodeError, bencode.decode_list, "test")
+
 class Encode_Dict(unittest.TestCase):
 	""" Check the function encode_dict() works correctly. """
 
