@@ -4,17 +4,15 @@
 import unittest
 import bencode
 
+""" Check the function collapse() works correctly. """
 class Collapse(unittest.TestCase):
-	# Check collapse works
-	def test0(self):
-		self.n = bencode.collapse(["f", "o", "o"])
-		self.assertEqual(self.n, "foo")
+	def test_concatenation(self):
+		""" Test that collapse() correctly concates characters. """
+		self.n = bencode.collapse(["t", "e", "s", "t"])
+		self.assertEqual(self.n, "test")
 
-	def test1(self):
-		self.n = bencode.collapse(["1", "2", "3"])
-		self.assertEqual(self.n, "123")
-
-	def test2(self):
+	def test_exception_raised(self):
+		""" Test a TypeError is raised when concating different types. """
 		self.assertRaises(TypeError, bencode.collapse, [1, "a", True])
 
 class Encode_Int(unittest.TestCase):
