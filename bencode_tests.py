@@ -15,9 +15,10 @@ class Collapse(unittest.TestCase):
 		""" Test a TypeError is raised when concating different types. """
 		self.assertRaises(TypeError, bencode.collapse, [1, "a", True])
 
+""" Check the function encode_int() works correctly. """
 class Encode_Int(unittest.TestCase):
-	# Check encode works
-	def test0(self):
+	""" Test a simple integer is encoded correctly. """
+	def test_encoding_integers(self):
 		self.n = bencode.encode_int(2)
 		self.assertEqual(self.n, "i2e")
 
