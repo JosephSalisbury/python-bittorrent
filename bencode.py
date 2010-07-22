@@ -144,9 +144,13 @@ def encode(data):
 
 # Dispatches data to appropriate decode function
 def decode(data):
-	if data[0] == "i":
+	if ben_type(data) == "int":
 		return decode_int(data)
-	elif data[0].isdigit():
+	elif ben_type(data) == "str":
 		return decode_str(data)
+	elif ben_type(data) == "list":
+		return decode_list(data)
+	elif ben_type(data) == "dict":
+		return decode_dict(data)
 	else:
-		raise DecodeError("Unknown data type.")
+		raise DecodeError("Unknown data type")
