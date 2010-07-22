@@ -8,6 +8,8 @@ def collapse(l):
 	return reduce(lambda x, y: x + y, l)
 
 def inflate(exp):
+	print exp
+
 	if ben_type(exp) == "int":
 		end = exp.find("e")
 		# The length of the integer is the same as the index of the ending character
@@ -31,6 +33,18 @@ def inflate(exp):
 			xs = inflate ( exp[strlength+ 2: ])
 
 			return [x] + xs
+
+	elif ben_type(exp) == "list":
+		# The expression starts with a list, but could have multiple lists
+		# within it.
+
+		numItems = 0	# We start with one known list
+		for x in exp:
+			# Count the number of integers and lists we have
+			if x == "i":
+				numItems += 1
+
+		print numItems
 
 # Given a bencoded expression, returns what type it is
 #Eg: ben_type("i1e") == "int"
@@ -142,8 +156,9 @@ def decode_list(data):
 	data = data[1:-1]	# Remove the list annotation
 
 	temp = []
-	terms = inflate(data)
-	for item in terms:
+	for item in inflate(data):
+		print item
+
 		temp.append(decode(item))
 
 	return temp
