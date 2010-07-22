@@ -7,6 +7,18 @@ import types
 def collapse(l):
 	return reduce(lambda x, y: x + y, l)
 
+# Given a bencoded expression, returns what type it is
+#Eg: ben_type("i1e") == "int"
+def ben_type(expression):
+	if expression[0] == "i":
+		return "int"
+	elif expression[0].isdigit():
+		return "str"
+	elif expression[0] == "l":
+		return "list"
+	elif expression[0] == "d":
+		return "dict"
+
 # Raised if an error occurs encoding.
 class EncodeError(Exception):
 	def __init__(self, value):
