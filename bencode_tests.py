@@ -4,10 +4,11 @@
 import unittest
 import bencode
 
-""" Check the function collapse() works correctly. """
 class Collapse(unittest.TestCase):
+	""" Check the function collapse() works correctly. """
+
 	def test_concatenation(self):
-		""" Test that collapse() correctly concates characters. """
+		""" Test that characters are correctly concatenated. """
 		self.n = bencode.collapse(["t", "e", "s", "t"])
 		self.assertEqual(self.n, "test")
 
@@ -16,28 +17,36 @@ class Collapse(unittest.TestCase):
 		self.assertRaises(TypeError, bencode.collapse, [1, "a", True])
 
 class Encode_Int(unittest.TestCase):
-	# Check encode works
-	def test0(self):
-		self.n = bencode.encode_int(2)
-		self.assertEqual(self.n, "i2e")
+	"""  Check the function encode_int() works correctly. """
 
-	def test1(self):
+	def test_simple_integers(self):
+		""" Test that simple integers are encoded correctly. """
+		self.n = bencode.encode_int(1)
+		self.assertEqual(self.n, "i1e")
+
+	def test_zero(self):
+		""" Test that zero is encoded correctly. """
 		self.n = bencode.encode_int(0)
 		self.assertEqual(self.n, "i0e")
 
-	def test2(self):
-		self.n = bencode.encode_int(456)
-		self.assertEqual(self.n, "i456e")
+	def test_longer_integers(self):
+		""" Test that longer numbers are correctly encoded. """
+		self.n = bencode.encode_int(12345)
+		self.assertEqual(self.n, "i12345e")
 
-	# Check exceptions are raised for bad expressions
-	def test3(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_int, "459e")
+	def test_minus_integers(self):
+		""" Test that minus numbers are correctly encoded. """
+		self.n = bencode.encode_int(-1)
+		self.assertEqual(self.n, "i-1e")
 
-	def test4(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_int, "i459")
+	def test_leading_zeros(self):
+		""" Test that leading zeros are correctly removed. """
+		self.n = bencode.encode_int(01)
+		self.assertEqual(self.n, "i1e")
 
-	def test5(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_int, "googamoosh")
+	def test_exception_on_string(self):
+		""" Test an exception is raised when encoding a string. """
+		self.assertRaises(bencode.EncodeError, bencode.encode_int, "test")
 
 class Decode_Int(unittest.TestCase):
 	# Check decode works
