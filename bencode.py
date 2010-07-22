@@ -7,6 +7,31 @@ import types
 def collapse(l):
 	return reduce(lambda x, y: x + y, l)
 
+def inflate(exp):
+	if ben_type(exp) == "int":
+		end = exp.find("e")
+		# The length of the integer is the same as the index of the ending character
+		# This means its the only integer in the expression, and we just return it
+		if end == len(exp) - 1:
+			return [exp]
+		else:
+		# Otherwise, take the first integer, and inflate the rest
+			x = exp[:end + 1]
+			xs = inflate( exp[end + 1: ] )
+
+			return [x] + xs
+
+	elif ben_type(exp) == "str":
+		if len(exp) == int(exp[0]) + 2:
+			return [exp]
+		else:
+			strlength = int(exp[0])
+
+			x = exp[:strlength + 2]
+			xs = inflate ( exp[strlength+ 2: ])
+
+			return [x] + xs
+
 # Given a bencoded expression, returns what type it is
 #Eg: ben_type("i1e") == "int"
 def ben_type(expression):
@@ -109,7 +134,19 @@ def encode_list(data):
 
 # Decode a list
 def decode_list(data):
-	pass
+	try:
+		assert ben_type(data) == "list"
+	except AssertionError:
+		raise DecodeError("Malformed expression.")
+
+	data = data[1:-1]	# Remove the list annotation
+
+	temp = []
+	terms = inflate(data)
+	for item in terms:
+		temp.append(decode(item))
+
+	return temp
 
 # Encode a dictionary
 def encode_dict(data):
