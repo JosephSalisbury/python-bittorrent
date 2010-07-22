@@ -189,6 +189,11 @@ class Encode_List(unittest.TestCase):
 		self.n = bencode.encode_list([[1, 2], [3, 4]])
 		self.assertEquals(self.n, "lli1ei2eeli3ei4eee")
 
+	def test_empty_list(self):
+		""" Test that an empty list is encoded correctly. """
+		self.n = bencode.encode_list([])
+		self.assertEquals(self.n, "le")
+
 	def test_exception_on_string(self):
 		""" Test that an exception is raised when given a string. """
 		self.assertRaises(bencode.EncodeError, bencode.encode_list, "test")
@@ -215,6 +220,11 @@ class Decode_List(unittest.TestCase):
 		""" Test that a nested list is decoded correctly. """
 		self.n = bencode.decode_list("lli1ei2eeli3ei4eee")
 		self.assertEquals(self.n, [[1, 2], [3, 4]])
+
+	def test_empty_list(self):
+		""" Test that an empty list is decoded correctly. """
+		self.n = bencode.decode_list("le")
+		self.assertEquals(self.n, [])
 
 	def test_exception_on_string(self):
 		""" Test that an exception is raised when given a string. """
