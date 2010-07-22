@@ -65,19 +65,18 @@ def decode_string(data):
 	except AssertionError:
 		raise DecodeError("Badly formed expression.")
 
-	# Spin through, collect the number tokens, and count them
+	# Spin through and collect all the number tokens
 	num = []	# The tokens of the number
-	lenNum = 1	# How many digits in the number
 	for x in data:
 		if x.isdigit():
 			num.append(x)
-			lenNum += 1
 		else:
 			break
 
 	# Reduce the number characters into one string, then integerise it
 	n = int(collapse(num))
 
+	lenNum = len(num) + 1	# Including the colon, as well
 	# The subsection of the string we want
 	t = data[lenNum:n+lenNum]
 
