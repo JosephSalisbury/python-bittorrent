@@ -49,193 +49,172 @@ class Encode_Int(unittest.TestCase):
 		self.assertRaises(bencode.EncodeError, bencode.encode_int, "test")
 
 class Decode_Int(unittest.TestCase):
-	# Check decode works
-	def test0(self):
-		self.n = bencode.decode_int("i2e")
-		self.assertEqual(self.n, 2)
+	""" Check the function decode_int() works correctly. """
 
-	def test1(self):
+	def test_simple_integers(self):
+		""" Test that simple integers are decoded correctly. """
+		self.n = bencode.decode_int("i1e")
+		self.assertEqual(self.n, 1)
+
+	def test_zero(self):
+		""" Test that zero is decoded correctly. """
 		self.n = bencode.decode_int("i0e")
 		self.assertEqual(self.n, 0)
 
-	def test2(self):
-		self.n = bencode.decode_int("i456e")
-		self.assertEqual(self.n, 456)
+	def test_longer_integers(self):
+		""" Test that longer numbers are correctly decoded. """
+		self.n = bencode.decode_int("i12345e")
+		self.assertEqual(self.n, 12345)
 
-	# Check exceptions are raised for bad expressions
-	def test3(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode_int, "459e")
+	def test_minus_integers(self):
+		""" Test that minus numbers are correctly decoded. """
+		self.n = bencode.decode_int("i-1e")
+		self.assertEqual(self.n, -1)
 
-	def test4(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i459")
+	def test_exception_on_leading_zeros(self):
+		""" Test that an exception is raised when decoding an expression which
+			has leading zeros. """
+		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i01e")
 
-	def test5(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode_int, "googamoosh")
+	def test_exception_on_missing_start_constant(self):
+		""" Test that an exception is raised when trying to decode an expression
+			which is missing the start constant. """
+		self.assertRaises(bencode.DecodeError, bencode.decode_int, "1e")
 
-	# Check against leading zeros
-	def test6(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i04e")
+	def test_exception_on_missing_end_constant(self):
+		""" Test that an exception is raised when trying to decode an expression
+			which is missing the end constant. """
+		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i1")
 
 class Encode_Str(unittest.TestCase):
-	# Check encode works
-	def test0(self):
-		self.n = bencode.encode_str("spam")
-		self.assertEqual(self.n, "4:spam")
+	""" Check the function encode_str() works correctly. """
 
-	def test1(self):
-		self.n = bencode.encode_str("googamoosh")
-		self.assertEqual(self.n, "10:googamoosh")
+	def test_character(self):
+		""" Test that a single character is encoded correctly. """
+		self.n = bencode.encode_str("a")
+		self.assertEqual(self.n, "1:a")
 
-	def test2(self):
-		self.n = bencode.encode_str("eggandham")
-		self.assertEqual(self.n, "9:eggandham")
+	def test_string(self):
+		""" Test that a string is encoded correctly. """
+		self.n = bencode.encode_str("test")
+		self.assertEqual(self.n, "4:test")
 
-	# Check exceptions are properly raised
-	def test3(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_str, 5)
-
-	def test4(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_str, 100)
+	def test_exception_on_int(self):
+		""" Test that an exception is raised when trying to encode an integer. """
+		self.assertRaises(bencode.EncodeError, bencode.encode_str, 1)
 
 class Decode_Str(unittest.TestCase):
-	# Check decode works
-	def test0(self):
-		self.n = bencode.decode_str("4:spam")
-		self.assertEqual(self.n, "spam")
+	""" Check the function decode_str() works correctly. """
 
-	def test1(self):
-		self.n = bencode.decode_str("10:googamoosh")
-		self.assertEqual(self.n, "googamoosh")
+	def test_character(self):
+		""" Test that a single character is decoded correctly """
+		self.n = bencode.decode_str("1:a")
+		self.assertEqual(self.n, "a")
 
-	def test2(self):
-		self.n = bencode.decode_str("9:eggandham")
-		self.assertEqual(self.n, "eggandham")
+	def test_string(self):
+		""" Test that a string is decoded correctly. """
+		self.n = bencode.decode_str("4:test")
+		self.assertEqual(self.n, "test")
 
-	# Check we don't take too much
-	def test3(self):
-		self.n = bencode.decode_str("5:twatstick")
-		self.assertEqual(self.n, "twats")
+	def test_string_length(self):
+		""" Test that string length is respected. """
+		self.n = bencode.decode_str("1:abc")
+		self.assertEqual(self.n, "a")
 
-	# Check we raise exceptions for mal-formed expressions
-	def test4(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode_str, "nonumber")
-
-	def test5(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode_str, ":::")
+	def test_exception_on_no_number(self):
+		""" Test that an exception is raised when no number is prefixed. """
+		self.assertRaises(bencode.DecodeError, bencode.decode_str, "abc")
 
 class Encode_List(unittest.TestCase):
-	# Check encode works
-	def test0(self):
-		self.n = bencode.encode_list(["spam", "eggs"])
-		self.assertEquals(self.n, "l4:spam4:eggse")
+	""" Check the function encode_list() works correctly. """
 
-	def test1(self):
+	def test_simple_list(self):
+		""" Test that a one item list is encoded correctly. """
+		self.n = bencode.encode_list([1])
+		self.assertEquals(self.n, "li1ee")
+
+	def test_longer_list(self):
+		""" Test that a longer list is encoded correctly. """
 		self.n = bencode.encode_list([1, 2, 3])
 		self.assertEquals(self.n, "li1ei2ei3ee")
 
-	def test2(self):
-		self.n = bencode.encode_list(["one", 1])
-		self.assertEquals(self.n, "l3:onei1ee")
+	def test_mixed_list(self):
+		""" Test that a mixed list is encoded correctly. """
+		self.n = bencode.encode_list([1, "one"])
+		self.assertEquals(self.n, "li1e3:onee")
 
-	def test3(self):
+	def test_nested_list(self):
+		""" Test that a nested list is encoded correctly. """
 		self.n = bencode.encode_list([[1, 2], [3, 4]])
 		self.assertEquals(self.n, "lli1ei2eeli3ei4eee")
 
-	# Check exceptions are raised
-	def test4(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_list, "nonumber")
-
-	def test5(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_list, "400")
+	def test_exception_on_string(self):
+		""" Test that an exception is raised when given a string. """
+		self.assertRaises(bencode.EncodeError, bencode.encode_list, "test")
 
 class Encode_Dict(unittest.TestCase):
-	# Check encode works
-	def test0(self):
-		self.n = bencode.encode_dict({"cow":"moo", "spam":"eggs"})
-		self.assertEquals(self.n, "d3:cow3:moo4:spam4:eggse")
+	""" Check the function encode_dict() works correctly. """
 
-	def test1(self):
-		self.n = bencode.encode_dict({"3": "three"})
-		self.assertEquals(self.n, "d1:35:threee")
+	def test_simple_dict(self):
+		""" Test that a one key dict is encoded correctly. """
+		self.n = bencode.encode_dict({"key":"value"})
+		self.assertEquals(self.n, "d3:key5:valuee")
 
-	def test2(self):
-		self.n = bencode.encode_dict({'spam': ['a', 'b']})
-		self.assertEquals(self.n, "d4:spaml1:a1:bee")
+	def test_longer_dict(self):
+		""" Test that a longer dict is encoded correctly. """
+		self.n = bencode.encode_dict({"key_1":"value_1", "key_2":"value_2"})
+		self.assertEquals(self.n, "d5:key_17:value_15:key_27:value_2e")
 
-	def test3(self):
-		self.n = bencode.encode_dict({"sub":{"foo":"bar"}})
-		self.assertEquals(self.n, "d3:subd3:foo3:baree")
+	def test_mixed_dict(self):
+		""" Test that a dict with a list value is encoded correctly. """
+		self.n = bencode.encode_dict({'key': ['a', 'b']})
+		self.assertEquals(self.n, "d3:keyl1:a1:bee")
 
-	# Check exceptions are raised
-	def test4(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_dict, "notadictionary")
+	def test_nested_dict(self):
+		""" Test that a nested dict is encoded correctly. """
+		self.n = bencode.encode_dict({"key":{"key":"value"}})
+		self.assertEquals(self.n, "d3:keyd3:key5:valueee")
 
-	def test5(self):
-		self.assertRaises(bencode.EncodeError, bencode.encode_dict, 456)
+	def test_exception_on_string(self):
+		""" Test that an exception is raised when given a string. """
+		self.assertRaises(bencode.EncodeError, bencode.encode_dict, "test")
 
 class Encode(unittest.TestCase):
-	# Check encode works, on ints
-	def test0(self):
-		self.n = bencode.encode(2)
-		self.assertEqual(self.n, "i2e")
+	""" Check the encode() function works. As this dispatches to the other
+		encode functions, we only have to check the dispatching, not the other
+		functions, as we have already checked those. """
 
-	def test1(self):
-		self.n = bencode.encode(0)
-		self.assertEqual(self.n, "i0e")
+	def test_integers(self):
+		""" Test integers are encoded correctly. """
+		self.n = bencode.encode(123)
+		self.assertEqual(self.n, "i123e")
 
-	def test2(self):
-		self.n = bencode.encode(-9)
-		self.assertEqual(self.n, "i-9e")
+	def test_strings(self):
+		""" Test strings are encoded correctly. """
+		self.n = bencode.encode("test")
+		self.assertEqual(self.n, "4:test")
 
-	# Check encode works on strings
-	def test3(self):
-		self.n = bencode.encode("spam")
-		self.assertEqual(self.n, "4:spam")
-
-	def test4(self):
-		self.n = bencode.encode("eggandham")
-		self.assertEqual(self.n, "9:eggandham")
-
-	def test5(self):
-		self.n = bencode.encode("jacky")
-		self.assertEqual(self.n, "5:jacky")
-
-	# Check encode works on lists
-	def test6(self):
-		self.n = bencode.encode(["spam", "eggs"])
-		self.assertEquals(self.n, "l4:spam4:eggse")
-
-	def test7(self):
+	def test_lists(self):
+		""" Test lists are encoded correctly. """
 		self.n = bencode.encode([1, 2, 3])
 		self.assertEquals(self.n, "li1ei2ei3ee")
 
-	def test8(self):
-		self.n = bencode.encode([[1, 2], [3, 4]])
-		self.assertEquals(self.n, "lli1ei2eeli3ei4eee")
+	def test_dicts(self):
+		""" Test dicts are encoded correctly. """
+		self.n = bencode.encode({"key":"value"})
+		self.assertEquals(self.n, "d3:key5:valuee")
 
 class Decode(unittest.TestCase):
-	# Check decode works
-	def test0(self):
-		self.n = bencode.decode("i2e")
-		self.assertEqual(self.n, 2)
+	""" Check the decode() function works. As this dispatches to the other
+		decode functions, we only have to check the dispatching, not the other
+		functions, as we have already checked those. """
 
-	def test1(self):
-		self.n = bencode.decode("i0e")
-		self.assertEqual(self.n, 0)
+	def test_integers(self):
+		self.n = bencode.decode("i123e")
+		self.assertEqual(self.n, 123)
 
-	def test2(self):
-		self.n = bencode.decode("4:spam")
-		self.assertEqual(self.n, "spam")
-
-	def test3(self):
-		self.n = bencode.decode("9:eggandham")
-		self.assertEqual(self.n, "eggandham")
-
-	# Check exceptions are correctly raised
-	def test4(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode, "i459")
-
-	def test5(self):
-		self.assertRaises(bencode.DecodeError, bencode.decode, "nonumber")
+	def test_strings(self):
+		self.n = bencode.decode("4:test")
+		self.assertEqual(self.n, "test")
 
 unittest.main()
