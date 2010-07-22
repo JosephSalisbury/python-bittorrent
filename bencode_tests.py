@@ -16,6 +16,24 @@ class Collapse(unittest.TestCase):
 		""" Test a TypeError is raised when concating different types. """
 		self.assertRaises(TypeError, bencode.collapse, [1, "a", True])
 
+class Inflate(unittest.TestCase):
+	""" Check the inflate() function works correctly. """
+
+	def test_simple(self):
+		""" Test that a simple expression is inflated correctly. """
+		self.n = bencode.inflate("i1e")
+		self.assertEqual(self.n, ["i1e"])
+
+	def test_longer(self):
+		""" Test that a longer expression is inflated correctly. """
+		self.n = bencode.inflate("i1ei2ei3e")
+		self.assertEqual(self.n, ["i1e", "i2e", "i3e"])
+
+	def test_mixed(self):
+		""" Test that a mixed expression is inflated correctly. """
+		self.n = bencode.inflate("3:onei1e3:twoi2e")
+		self.assertEqual(self.n, ["3:one", "i1e", "3:two", "i2e"])
+
 class Ben_Type(unittest.TestCase):
 	""" Check the function ben_type() works correctly. """
 
