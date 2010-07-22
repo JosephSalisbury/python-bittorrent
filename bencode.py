@@ -45,7 +45,7 @@ def encode_int(num):
 # Decode an integer
 def decode_int(data):
 	try:
-		assert data[0] == "i"	# Check it's an integer
+		assert ben_type(data) == "int"
 		end = data.index('e')	# Find the end of the integer
 	except AssertionError:
 		raise DecodeError("Badly formed expression.")
@@ -73,7 +73,7 @@ def encode_str(data):
 # Decode a string
 def decode_str(data):
 	try:
-		assert data[0].isdigit() == True
+		assert ben_type(data) == "str"
 	except AssertionError:
 		raise DecodeError("Badly formed expression.")
 
