@@ -187,6 +187,17 @@ def encode_dict(data):
 def decode_dict(data):
 	pass
 
+# Dictionaries of the data type, and the function to use
+encode_functions = {int:encode_int,
+					str:encode_str,
+					list:encode_list,
+					dict:encode_dict}
+
+decode_functions = {"int":decode_int,
+					"str":decode_str,
+					"list":decode_list,
+					"dict":decode_dict}
+
 # Dispatches data to appropriate encode function
 def encode(data):
 	if type(data) == int:
