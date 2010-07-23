@@ -10,7 +10,7 @@ def collapse(l):
 def inflate(exp):
 	print exp
 
-	if ben_type(exp) == "int":
+	if ben_type(exp) == int:
 		end = exp.find("e")
 		# The length of the integer is the same as the index of the ending character
 		# This means its the only integer in the expression, and we just return it
@@ -23,7 +23,7 @@ def inflate(exp):
 
 			return [x] + xs
 
-	elif ben_type(exp) == "str":
+	elif ben_type(exp) == str:
 		if len(exp) == int(exp[0]) + 2:
 			return [exp]
 		else:
@@ -34,7 +34,7 @@ def inflate(exp):
 
 			return [x] + xs
 
-	elif ben_type(exp) == "list":
+	elif ben_type(exp) == list:
 		# The expression starts with a list, but could have multiple lists
 		# within it.
 
@@ -50,13 +50,13 @@ def inflate(exp):
 #Eg: ben_type("i1e") == "int"
 def ben_type(expression):
 	if expression[0] == "i":
-		return "int"
+		return int
 	elif expression[0].isdigit():
-		return "str"
+		return str
 	elif expression[0] == "l":
-		return "list"
+		return list
 	elif expression[0] == "d":
-		return "dict"
+		return dict
 
 # Raised if an error occurs encoding.
 class EncodeError(Exception):
@@ -84,7 +84,7 @@ def encode_int(num):
 # Decode an integer
 def decode_int(data):
 	try:
-		assert ben_type(data) == "int"
+		assert ben_type(data) == int
 		end = data.index('e')	# Find the end of the integer
 	except AssertionError:
 		raise DecodeError("Badly formed expression.")
@@ -112,7 +112,7 @@ def encode_str(data):
 # Decode a string
 def decode_str(data):
 	try:
-		assert ben_type(data) == "str"
+		assert ben_type(data) == str
 	except AssertionError:
 		raise DecodeError("Badly formed expression.")
 
@@ -152,7 +152,7 @@ def encode_list(data):
 # Decode a list
 def decode_list(data):
 	try:
-		assert ben_type(data) == "list"
+		assert ben_type(data) == list
 	except AssertionError:
 		raise DecodeError("Malformed expression.")
 
@@ -193,10 +193,10 @@ encode_functions = {int:encode_int,
 					list:encode_list,
 					dict:encode_dict}
 
-decode_functions = {"int":decode_int,
-					"str":decode_str,
-					"list":decode_list,
-					"dict":decode_dict}
+decode_functions = {int:decode_int,
+					str:decode_str,
+					list:decode_list,
+					dict:decode_dict}
 
 # Dispatches data to appropriate encode function
 def encode(data):
