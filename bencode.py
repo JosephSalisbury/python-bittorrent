@@ -85,11 +85,13 @@ def encode_int(num):
 def decode_int(data):
 	try:
 		assert ben_type(data) == int
-		end = data.index('e')	# Find the end of the integer
 	except AssertionError:
-		raise DecodeError("Badly formed expression.")
+		raise DecodeError("Malformed expression.")
+
+	try:
+		end = data.index("e")	# Find the end of the integer
 	except ValueError:
-		raise DecodeError("Cannot find end of expression.")
+		raise DecodeError("Cannot find end of integer expression.")
 
 	# Remove the substring we want
 	t = data[1:end]
