@@ -73,13 +73,13 @@ class DecodeError(Exception):
 		return repr(self.value)
 
 # Encode an integer
-def encode_int(num):
+def encode_int(data):
 	try:
-		assert type(num) == int
+		assert type(data) == int
 	except AssertionError:
 		raise EncodeError("Malformed expression.")
 
-	return "i" + str(num) + "e"
+	return "i" + str(data) + "e"
 
 # Decode an integer
 def decode_int(data):
