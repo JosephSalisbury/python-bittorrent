@@ -200,26 +200,14 @@ decode_functions = {"int":decode_int,
 
 # Dispatches data to appropriate encode function
 def encode(data):
-	if type(data) == int:
-		return encode_int(data)
-	elif type(data) == str:
-		return encode_str(data)
-	elif type(data) == list:
-		return encode_list(data)
-	elif type(data) == dict:
-		return encode_dict(data)
-	else:
-		raise EncodeError("Unknown data type")
+	try:
+		return encode_functions[type(data)](data)
+	except KeyError:
+		raise EncodeError("Unknown data type.")
 
 # Dispatches data to appropriate decode function
 def decode(data):
-	if ben_type(data) == "int":
-		return decode_int(data)
-	elif ben_type(data) == "str":
-		return decode_str(data)
-	elif ben_type(data) == "list":
-		return decode_list(data)
-	elif ben_type(data) == "dict":
-		return decode_dict(data)
-	else:
-		raise DecodeError("Unknown data type")
+	try:
+		return decode_functions[ben_type(data)](data)
+	except KeyError:
+		raise DecodeError("Unknown data type.")
