@@ -4,6 +4,39 @@
 import unittest
 import bencode
 
+class List_Walk(unittest.TestCase):
+	""" Check the function list_walk() works correctly. """
+
+	def test_simple_list(self):
+		""" Test that simple lists are correctly seperated. """
+		self.exp = "li1eei1e"
+		self.n = bencode.list_walk(self.exp, 1)
+		self.assertEqual(self.exp[:self.n], "li1ee")
+
+	def test_longer_list(self):
+		""" Test that longer lists are correctly seperated. """
+		self.exp = "li1ei2eei1e"
+		self.n = bencode.list_walk(self.exp, 1)
+		self.assertEqual(self.exp[:self.n], "li1ei2ee")
+
+	def test_list_with_string(self):
+		""" Test that simple list with a string is seperated. """
+		self.exp = "l4:teste3:end"
+		self.n = bencode.list_walk(self.exp, 1)
+		self.assertEqual(self.exp[:self.n], "l4:teste")
+
+	def test_list_with_long_string(self):
+		""" Test a list with a long string is seperated correctly. """
+		self.exp = "l10:eggsandhame3:end"
+		self.n = bencode.list_walk(self.exp, 1)
+		self.assertEqual(self.exp[:self.n], "l10:eggsandhame")
+
+	def test_nested_list(self):
+		""" Test a nested list is seperated correctly. """
+		self.exp = "li1eli2eei3eeli1ee"
+		self.n = bencode.list_walk(self.exp, 1)
+		self.assertEqual(self.exp[:self.n], "li1eli2eei3ee")
+
 class Collapse(unittest.TestCase):
 	""" Check the function collapse() works correctly. """
 
