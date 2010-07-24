@@ -290,6 +290,33 @@ class Encode_Dict(unittest.TestCase):
 		""" Test that an exception is raised when given a string. """
 		self.assertRaises(bencode.EncodeError, bencode.encode_dict, "test")
 
+class Decode_Dict(unittest.TestCase):
+	""" Check the function decode_dict() works correctly. """
+
+	def test_simple_dict(self):
+		""" Test that a one key dict is decoded correctly. """
+		self.n = bencode.decode_dict("d3:key5:valuee")
+		self.assertEquals(self.n, {"key":"value"})
+
+	def test_longer_dict(self):
+		""" Test that a longer dict is decoded correctly. """
+		self.n = bencode.decode_dict("d5:key_17:value_15:key_27:value_2e")
+		self.assertEquals(self.n, {"key_1":"value_1", "key_2":"value_2"})
+
+	def test_mixed_dict(self):
+		""" Test that a dict with a list value is decoded correctly. """
+		self.n = bencode.decode_dict("d3:keyl1:a1:bee")
+		self.assertEquals(self.n, {'key': ['a', 'b']})
+
+	def test_nested_dict(self):
+		""" Test that a nested dict is decoded correctly. """
+		self.n = bencode.decode_dict("d3:keyd3:key5:valueee")
+		self.assertEquals(self.n, {"key":{"key":"value"}})
+
+	def test_exception_on_string(self):
+		""" Test that an exception is raised when given a string. """
+		self.assertRaises(bencode.DecodeError, bencode.decode_dict, "test")
+
 class Encode(unittest.TestCase):
 	""" Check the encode() function works. As this dispatches to the other
 		encode functions, we only have to check the dispatching, not the other
