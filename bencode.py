@@ -87,7 +87,7 @@ def inflate(exp):
 		else:
 			enddict = walk(exp, 1)
 
-			x = exp[:endlist]
+			x = exp[:enddict]
 			xs = inflate( exp[enddict:] )
 
 			return [x] + xs
