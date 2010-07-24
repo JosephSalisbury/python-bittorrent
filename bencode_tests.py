@@ -120,7 +120,7 @@ class Encode_Int(unittest.TestCase):
 
 	def test_exception_on_string(self):
 		""" Test an exception is raised when encoding a string. """
-		self.assertRaises(bencode.EncodeError, bencode.encode_int, "test")
+		self.assertRaises(bencode.BencodeError, bencode.encode_int, "test")
 
 class Decode_Int(unittest.TestCase):
 	""" Check the function decode_int() works correctly. """
@@ -148,17 +148,17 @@ class Decode_Int(unittest.TestCase):
 	def test_exception_on_leading_zeros(self):
 		""" Test that an exception is raised when decoding an expression which
 			has leading zeros. """
-		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i01e")
+		self.assertRaises(bencode.BencodeError, bencode.decode_int, "i01e")
 
 	def test_exception_on_missing_start_constant(self):
 		""" Test that an exception is raised when trying to decode an expression
 			which is missing the start constant. """
-		self.assertRaises(bencode.DecodeError, bencode.decode_int, "1e")
+		self.assertRaises(bencode.BencodeError, bencode.decode_int, "1e")
 
 	def test_exception_on_missing_end_constant(self):
 		""" Test that an exception is raised when trying to decode an expression
 			which is missing the end constant. """
-		self.assertRaises(bencode.DecodeError, bencode.decode_int, "i1")
+		self.assertRaises(bencode.BencodeError, bencode.decode_int, "i1")
 
 class Encode_Str(unittest.TestCase):
 	""" Check the function encode_str() works correctly. """
@@ -175,7 +175,7 @@ class Encode_Str(unittest.TestCase):
 
 	def test_exception_on_int(self):
 		""" Test that an exception is raised when trying to encode an integer. """
-		self.assertRaises(bencode.EncodeError, bencode.encode_str, 1)
+		self.assertRaises(bencode.BencodeError, bencode.encode_str, 1)
 
 class Decode_Str(unittest.TestCase):
 	""" Check the function decode_str() works correctly. """
@@ -197,7 +197,7 @@ class Decode_Str(unittest.TestCase):
 
 	def test_exception_on_no_number(self):
 		""" Test that an exception is raised when no number is prefixed. """
-		self.assertRaises(bencode.DecodeError, bencode.decode_str, "abc")
+		self.assertRaises(bencode.BencodeError, bencode.decode_str, "abc")
 
 class Encode_List(unittest.TestCase):
 	""" Check the function encode_list() works correctly. """
@@ -229,7 +229,7 @@ class Encode_List(unittest.TestCase):
 
 	def test_exception_on_string(self):
 		""" Test that an exception is raised when given a string. """
-		self.assertRaises(bencode.EncodeError, bencode.encode_list, "test")
+		self.assertRaises(bencode.BencodeError, bencode.encode_list, "test")
 
 class Decode_List(unittest.TestCase):
 	""" Check the function decode_list() works correctly. """
@@ -261,7 +261,7 @@ class Decode_List(unittest.TestCase):
 
 	def test_exception_on_string(self):
 		""" Test that an exception is raised when given a string. """
-		self.assertRaises(bencode.DecodeError, bencode.decode_list, "test")
+		self.assertRaises(bencode.BencodeError, bencode.decode_list, "test")
 
 class Encode_Dict(unittest.TestCase):
 	""" Check the function encode_dict() works correctly. """
@@ -288,7 +288,7 @@ class Encode_Dict(unittest.TestCase):
 
 	def test_exception_on_string(self):
 		""" Test that an exception is raised when given a string. """
-		self.assertRaises(bencode.EncodeError, bencode.encode_dict, "test")
+		self.assertRaises(bencode.BencodeError, bencode.encode_dict, "test")
 
 class Decode_Dict(unittest.TestCase):
 	""" Check the function decode_dict() works correctly. """
@@ -315,7 +315,7 @@ class Decode_Dict(unittest.TestCase):
 
 	def test_exception_on_string(self):
 		""" Test that an exception is raised when given a string. """
-		self.assertRaises(bencode.DecodeError, bencode.decode_dict, "test")
+		self.assertRaises(bencode.BencodeError, bencode.decode_dict, "test")
 
 class Encode(unittest.TestCase):
 	""" Check the encode() function works. As this dispatches to the other
