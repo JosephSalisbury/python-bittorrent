@@ -216,7 +216,22 @@ def encode_dict(data):
 
 # Decode a dictionary
 def decode_dict(data):
-	pass
+	try:
+		assert ben_type(data) == dict
+	except AssertionError:
+		raise DecodeError("Malformed expression.")
+
+	if data == "de":
+		return {}
+
+	data = data[1:-1]
+
+	temp = {}
+	for item in inflate(data):
+		# Add to the dictionary
+		pass
+
+	return temp
 
 # Dictionaries of the data type, and the function to use
 encode_functions = {int:encode_int,
