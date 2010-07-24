@@ -39,6 +39,9 @@ def collapse(l):
 	return reduce(lambda x, y: x + y, l)
 
 def inflate(exp):
+	if exp == "":
+		return []
+
 	if ben_type(exp) == int:
 		end = exp.find("e")
 		# The length of the integer is the same as the index of the ending character
