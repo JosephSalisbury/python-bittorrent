@@ -113,15 +113,15 @@ class BencodeError(Exception):
 		self.value = value
 		self.data = data
 
-	def __str(self):
-		return repr(self.mode, self.value, self.data)
+	def __str__(self):
+		return repr(self.mode + ": " + self.value + " : " + str(self.data))
 
 # Encode an integer
 def encode_int(data):
 	try:
 		assert type(data) == int
 	except AssertionError:
-		raise BencodeError("Encode", "Malformed expression.", data)
+		raise BencodeError("Encode", "Malformed expression", data)
 
 	return "i" + str(data) + "e"
 
@@ -130,12 +130,12 @@ def decode_int(data):
 	try:
 		assert ben_type(data) == int
 	except AssertionError:
-		raise BencodeError("Decode", "Malformed expression.", data)
+		raise BencodeError("Decode", "Malformed expression", data)
 
 	try:
 		end = data.index("e")	# Find the end of the integer
 	except ValueError:
-		raise BencodeError("Decode", "Cannot find end of integer expression.", data)
+		raise BencodeError("Decode", "Cannot find end of integer expression", data)
 
 	# Remove the substring we want
 	t = data[1:end]
@@ -151,7 +151,7 @@ def encode_str(data):
 	try:
 		assert type(data) == str
 	except AssertionError:
-		raise BencodeError("Encode", "Malformed expression.", data)
+		raise BencodeError("Encode", "Malformed expression", data)
 
 	return str(len(data)) + ":" + data
 
@@ -160,13 +160,13 @@ def decode_str(data):
 	try:
 		assert ben_type(data) == str
 	except AssertionError:
-		raise BencodeError("Decode", "Badly formed expression.", data)
+		raise BencodeError("Decode", "Badly formed expression", data)
 
 	# Spin through and collect all the number tokens, before the colon
 	try:
 		num = [a for a in data[:data.find(":")] if a.isdigit()]
 	except ValueError:
-		raise BencodeError("Badly formed expression.")
+		raise BencodeError("Decode", "Badly formed expression", data)
 
 	# Reduce the number characters into one string, then integerise it
 	n = int(collapse(num))
@@ -182,7 +182,7 @@ def encode_list(data):
 	try:
 		assert type(data) == list
 	except AssertionError:
-		raise BencodeError("Encode", "Malformed expression.", data)
+		raise BencodeError("Encode", "Malformed expression", data)
 
 	if data == []:
 		return "le"
@@ -198,7 +198,7 @@ def decode_list(data):
 	try:
 		assert ben_type(data) == list
 	except AssertionError:
-		raise BencodeError("Decode", "Malformed expression.", data)
+		raise BencodeError("Decode", "Malformed expression", data)
 
 	if data == "le":
 		return []
@@ -216,7 +216,7 @@ def encode_dict(data):
 	try:
 		assert type(data) == dict
 	except AssertionError:
-		raise BencodeError("Encode", "Malformed expression.", data)
+		raise BencodeError("Encode", "Malformed expression", data)
 
 	if data == {}:
 		return "de"
@@ -233,7 +233,7 @@ def decode_dict(data):
 	try:
 		assert ben_type(data) == dict
 	except AssertionError:
-		raise BencodeError("Decode", "Malformed expression.", data)
+		raise BencodeError("Decode", "Malformed expression", data)
 
 	if data == "de":
 		return {}
@@ -266,11 +266,11 @@ def encode(data):
 	try:
 		return encode_functions[type(data)](data)
 	except KeyError:
-		raise BencodeError("Encode", "Unknown data type.", data)
+		raise BencodeError("Encode", "Unknown data type", data)
 
 # Dispatches data to appropriate decode function
 def decode(data):
 	try:
 		return decode_functions[ben_type(data)](data)
 	except KeyError:
-		raise BencodeError("Decode", "Unknown data type.", data)
+		raise BencodeError("Decode", "Unknown data type", data)
