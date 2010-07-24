@@ -4,11 +4,11 @@ import types
 
 # Given a compound bencoded expression, starting with a list,
 # returns the index of the end of the first list
-def list_walk(exp, index):
+def walk(exp, index):
 	# If it's an integer, find the end, skip to the token after it
 	if exp[index] == "i":
 		endchar = exp.find("e", index)
-		return list_walk(exp, endchar + 1)
+		return walk(exp, endchar + 1)
 
 	# If it's a string, collapse the number tokens, then skip that far forward
 	elif exp[index].isdigit():
@@ -21,12 +21,16 @@ def list_walk(exp, index):
 		n = int(collapse(num))
 
 		# Skip the number of characters, the length of it, and the colon
-		return list_walk(exp, index + n + len(num) + 1)
+		return walk(exp, index + n + len(num) + 1)
 
 	# If it's a sublist, walk through that to the end, then keep going
 	elif exp[index] == "l":
-		endsublist = list_walk(exp[index:], 1)
-		return list_walk(exp, index + endsublist)
+		endsublist = walk(exp[index:], 1)
+		return walk(exp, index + endsublist)
+
+	elif exp[index] == "d":
+		endsubdict = walk(exp[index:], 1)
+		return walk(exp, index + endsubdict)
 
 	# If it's a lone "e", jump one to include it, then return
 	elif exp[index] == "e":
@@ -70,10 +74,21 @@ def inflate(exp):
 		if len(exp) == 2:	# Just an empty list
 			return [exp]
 		else:
-			endlist = list_walk(exp, 1)
+			endlist = walk(exp, 1)
 
 			x = exp[:endlist]
 			xs = inflate( exp[endlist:] )
+
+			return [x] + xs
+
+	elif ben_type(exp) == dict:
+		if len(exp) == 2:	# Empty dictionary
+			return [exp]
+		else:
+			enddict = walk(exp, 1)
+
+			x = exp[:endlist]
+			xs = inflate( exp[enddict:] )
 
 			return [x] + xs
 
@@ -230,9 +245,12 @@ def decode_dict(data):
 	data = data[1:-1]
 
 	temp = {}
-	for item in inflate(data):
-		# Add to the dictionary
-		pass
+	terms = inflate(data)
+
+	count = 0
+	while count != len(terms):
+		temp[decode_str(terms[count])] = decode(terms[count + 1])
+		count += 2
 
 	return temp
 
