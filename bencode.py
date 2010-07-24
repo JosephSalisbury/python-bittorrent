@@ -2,14 +2,43 @@
 
 import types
 
+# Given a compound bencoded expression, starting with a list,
+# returns the index of the end of the first list
+def list_walk(exp, index):
+	# If it's an integer, find the end, skip to the token after it
+	if exp[index] == "i":
+		endchar = exp.find("e", index)
+		return list_walk(exp, endchar + 1)
+
+	# If it's a string, collapse the number tokens, then skip that far forward
+	elif exp[index].isdigit():
+		num = []
+		for x in exp[index:]:
+			if x.isdigit():
+				num.append(x)
+			else:
+				break
+		n = int(collapse(num))
+
+		# Skip the number of characters, the length of it, and the colon
+		return list_walk(exp, index + n + len(num) + 1)
+
+	# If it's a sublist, walk through that to the end, then keep going
+	elif exp[index] == "l":
+		endsublist = list_walk(exp[index:], 1)
+		return list_walk(exp, index + endsublist)
+
+	# If it's a lone "e", jump one to include it, then return
+	elif exp[index] == "e":
+		index += 1
+		return index
+
 # Given a homogenous list l, returns the items of that list concatenated together.
 # Eg: collapse(["f", "o", "o"]) == "foo"
 def collapse(l):
 	return reduce(lambda x, y: x + y, l)
 
 def inflate(exp):
-	print exp
-
 	if ben_type(exp) == int:
 		end = exp.find("e")
 		# The length of the integer is the same as the index of the ending character
@@ -35,16 +64,15 @@ def inflate(exp):
 			return [x] + xs
 
 	elif ben_type(exp) == list:
-		# The expression starts with a list, but could have multiple lists
-		# within it.
+		if len(exp) == 2:	# Just an empty list
+			return [exp]
+		else:
+			endlist = list_walk(exp, 1)
 
-		numItems = 0	# We start with one known list
-		for x in exp:
-			# Count the number of integers and lists we have
-			if x == "i":
-				numItems += 1
+			x = exp[:endlist]
+			xs = inflate( exp[endlist:] )
 
-		print numItems
+			return [x] + xs
 
 # Given a bencoded expression, returns what type it is
 #Eg: ben_type("i1e") == "int"
@@ -165,8 +193,6 @@ def decode_list(data):
 
 	temp = []
 	for item in inflate(data):
-		print item
-
 		temp.append(decode(item))
 
 	return temp
