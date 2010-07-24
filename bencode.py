@@ -164,13 +164,11 @@ def decode_str(data):
 	except AssertionError:
 		raise DecodeError("Badly formed expression.")
 
-	# Spin through and collect all the number tokens
-	num = []	# The tokens of the number
-	for x in data:
-		if x.isdigit():
-			num.append(x)
-		else:
-			break
+	# Spin through and collect all the number tokens, before the colon
+	try:
+		num = [a for a in data[:data.find(":")] if a.isdigit()]
+	except ValueError:
+		raise DecodeError("Badly formed expression.")
 
 	# Reduce the number characters into one string, then integerise it
 	n = int(collapse(num))
