@@ -348,11 +348,23 @@ class Decode(unittest.TestCase):
 		functions, as we have already checked those. """
 
 	def test_integers(self):
+		""" Test integers are decoded correctly. """
 		self.n = bencode.decode("i123e")
 		self.assertEqual(self.n, 123)
 
 	def test_strings(self):
+		""" Test strings are decoded correctly. """
 		self.n = bencode.decode("4:test")
 		self.assertEqual(self.n, "test")
+
+	def test_lists(self):
+		""" Test lists are decoded correctly. """
+		self.n = bencode.decode("li1ee")
+		self.assertEqual(self.n, [1])
+
+	def test_dicts(self):
+		""" Test dictionaries are decoded correctly. """
+		self.n = bencode.decode("d3:key5:valuee")
+		self.assertEqual(self.n, {"key":"value"})
 
 unittest.main()
