@@ -207,6 +207,9 @@ def encode_dict(data):
 	except AssertionError:
 		raise EncodeError("Malformed expression.")
 
+	if data == {}:
+		return "de"
+
 	temp = []
 	for key in sorted(data.keys()):
 		temp.append(encode_str(key))	# Keys must be strings
