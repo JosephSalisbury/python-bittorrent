@@ -110,14 +110,15 @@ class BencodeError(Exception):
 
 		return repr(self.mode + ": " + self.value + " : " + str(self.data))
 
-# Encode an integer
-def encode_int(data):
-	try:
-		assert type(data) == int
-	except AssertionError:
-		raise BencodeError("Encode", "Malformed expression", data)
+def encode_int(num):
+	""" Given an integer, returns a bencoded string of that number. """
 
-	return "i" + str(data) + "e"
+	try:
+		assert type(num) == int
+	except AssertionError:
+		raise BencodeError("Encode", "Malformed expression", num)
+
+	return "i" + str(num) + "e"
 
 # Decode an integer
 def decode_int(data):
