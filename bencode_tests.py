@@ -196,6 +196,11 @@ class Encode_Str(unittest.TestCase):
 		self.n = bencode.encode_str("test")
 		self.assertEqual(self.n, "4:test")
 
+	def test_long_string(self):
+		""" Test that a long string is encoded correctly. """
+		self.n = bencode.encode_str("averylongstring")
+		self.assertEqual(self.n, "15:averylongstring")
+
 	def test_exception_on_int(self):
 		""" Test that an exception is raised when trying to encode an integer. """
 		self.assertRaises(bencode.BencodeError, bencode.encode_str, 1)
