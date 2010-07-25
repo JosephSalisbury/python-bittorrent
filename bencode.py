@@ -49,50 +49,31 @@ def inflate(exp):
 
 	# The expression starts with an integer.
 	if ben_type(exp) == int:
+		# Take the integer, and inflate the rest.
 		end = exp.find("e")	# The end of the integer.
-		# If the expression only contains the int, just return that.
-		if end == len(exp) - 1:
-			return [exp]
-		else:
-			# Otherwise, take the integer, and inflate the rest.
-			x = exp[:end + 1]
-			xs = inflate( exp[end + 1: ] )
+		x = exp[:end + 1]
+		xs = inflate( exp[end + 1: ] )
 
 	# The expression starts with a string.
 	elif ben_type(exp) == str:
-		# If the expression only contains the string, just return that.
-		if len(exp) == int(exp[0]) + 2:
-			return [exp]
-		else:
-			# Otherwise, take the string, and inflate the rest
-			strlength = int(exp[0])	# The length of the string.
-
-			x = exp[:strlength + 2]
-			xs = inflate ( exp[strlength+ 2: ])
+		# Take the string, and inflate the rest
+		strlength = int(exp[0])	# The length of the string.
+		x = exp[:strlength + 2]
+		xs = inflate ( exp[strlength+ 2: ])
 
 	# The expression starts with a list.
 	elif ben_type(exp) == list:
-		# If the expression is just an empty list, return that.
-		if len(exp) == 2:
-			return [exp]
-		else:
-			# Otherwise, take the list, inflate the rest.
-			endlist = walk(exp, 1)	# Find the end of the list.
-
-			x = exp[:endlist]
-			xs = inflate( exp[endlist:] )
+		# Take the list, inflate the rest.
+		endlist = walk(exp, 1)	# Find the end of the list.
+		x = exp[:endlist]
+		xs = inflate( exp[endlist:] )
 
 	# The expression starts with a dictionary.
 	elif ben_type(exp) == dict:
-		# If the expression is just an empty dict, return that.
-		if len(exp) == 2:
-			return [exp]
-		else:
-			# Otherwise, take the list, inflate the rest.
-			enddict = walk(exp, 1)
-
-			x = exp[:enddict]
-			xs = inflate( exp[enddict:] )
+		# Take the list, inflate the rest.
+		enddict = walk(exp, 1)	# Find the end of the dict.
+		x = exp[:enddict]
+		xs = inflate( exp[enddict:] )
 
 	# Returns the first item, with the inflated rest of the list.
 	return [x] + xs
