@@ -164,7 +164,8 @@ def decode_str(data):
 
 	# Spin through and collect all the number tokens, before the colon
 	try:
-		num = [a for a in data[:data.find(":")] if a.isdigit()]
+		colon = data.find(":")
+		num = [a for a in data[:colon] if a.isdigit()]
 	except ValueError:
 		raise BencodeError("Decode", "Badly formed expression", data)
 
