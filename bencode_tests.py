@@ -37,6 +37,24 @@ class Walk(unittest.TestCase):
 		self.n = bencode.walk(self.exp, 1)
 		self.assertEqual(self.exp[:self.n], "li1eli2eei3ee")
 
+	def test_simple_dict(self):
+		""" Test that simple dict is correctly seperated. """
+		self.exp = "d3:key5:valueei1e"
+		self.n = bencode.walk(self.exp, 1)
+		self.assertEqual(self.exp[:self.n], "d3:key5:valuee")
+
+	def test_longer_dict(self):
+		""" Test that a longer dict is correctly seperated. """
+		self.exp = "d5:key_17:value_15:key_27:value_2ei1e"
+		self.n = bencode.walk(self.exp, 1)
+		self.assertEqual(self.exp[:self.n], "d5:key_17:value_15:key_27:value_2e")
+
+	def test_nested_dict(self):
+		""" Test that a nested dict is correctly seperated. """
+		self.exp = "d3:subd3:key5:valueeei1e"
+		self.n = bencode.walk(self.exp, 1)
+		self.assertEqual(self.exp[:self.n], "d3:subd3:key5:valueee")
+
 class Collapse(unittest.TestCase):
 	""" Check the function collapse() works correctly. """
 
