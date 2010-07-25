@@ -53,8 +53,6 @@ def inflate(exp):
 			x = exp[:end + 1]
 			xs = inflate( exp[end + 1: ] )
 
-			return [x] + xs
-
 	elif ben_type(exp) == str:
 		if len(exp) == int(exp[0]) + 2:
 			return [exp]
@@ -63,8 +61,6 @@ def inflate(exp):
 
 			x = exp[:strlength + 2]
 			xs = inflate ( exp[strlength+ 2: ])
-
-			return [x] + xs
 
 	elif ben_type(exp) == list:
 		if len(exp) == 2:	# Just an empty list
@@ -75,8 +71,6 @@ def inflate(exp):
 			x = exp[:endlist]
 			xs = inflate( exp[endlist:] )
 
-			return [x] + xs
-
 	elif ben_type(exp) == dict:
 		if len(exp) == 2:	# Empty dictionary
 			return [exp]
@@ -86,7 +80,7 @@ def inflate(exp):
 			x = exp[:enddict]
 			xs = inflate( exp[enddict:] )
 
-			return [x] + xs
+	return [x] + xs
 
 # Given a bencoded expression, returns what type it is
 #Eg: ben_type("i1e") == "int"
