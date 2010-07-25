@@ -93,9 +93,12 @@ def ben_type(exp):
 	elif exp[0] == "d":
 		return dict
 
-# Raised if an error occurs during encoding / decoding
 class BencodeError(Exception):
+	""" Raised if an error occurs encoding or decoding. """
+
 	def __init__(self, mode, value, data):
+		""" Takes information of the error. """
+
 		assert mode in ["Encode", "Decode"]
 
 		self.mode = mode
@@ -103,6 +106,8 @@ class BencodeError(Exception):
 		self.data = data
 
 	def __str__(self):
+		""" Pretty-prints the information. """
+
 		return repr(self.mode + ": " + self.value + " : " + str(self.data))
 
 # Encode an integer
