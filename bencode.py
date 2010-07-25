@@ -2,35 +2,35 @@
 
 import types
 
-# Given a compound bencoded expression, starting with a list,
-# returns the index of the end of the first list
 def walk(exp, index):
-	# If it's an integer, find the end, skip to the token after it
+	""" Given a compound bencoded expression, as a string, returns
+	the index of the end of the first dict, or list. """
+
+	# The expression starts with an integer.
 	if exp[index] == "i":
+		# Find the end of the integer, then, keep walking.
 		endchar = exp.find("e", index)
 		return walk(exp, endchar + 1)
 
-	# If it's a string, collapse the number tokens, then skip that far forward
+	# The expression starts with a string.
 	elif exp[index].isdigit():
-		colon = exp.find(":", index)	# We only want before the first colon
+		# Find the end of the string.
+		colon = exp.find(":", index)
 		num = [a for a in exp[index:colon] if a.isdigit() ]
 		n = int(collapse(num))
 
-		# Skip the length of the number, the colon, and the length of the string
+		# Skip to the end of the string, keep walking.
 		return walk(exp, index + len(num) + 1 + n)
 
-	# If it's a sublist, walk through that to the end, then keep going
-	elif exp[index] == "l":
-		endsublist = walk(exp[index:], 1)
-		return walk(exp, index + endsublist)
+	# The expression starts with a list or dict.
+	elif exp[index] == "l" or exp[index] == "d":
+		# Walk through to the end of the sub, then keep going.
+		endsub = walk(exp[index:], 1)
+		return walk(exp, index + endsub)
 
-	elif exp[index] == "d":
-		endsubdict = walk(exp[index:], 1)
-		return walk(exp, index + endsubdict)
-
-	# If it's a lone "e", jump one to include it, then return
+	# The expression is a lone 'e', so we're at the end of the list.
 	elif exp[index] == "e":
-		index += 1
+		index += 1	# Jump one, to include it, then return the index.
 		return index
 
 def collapse(list):
