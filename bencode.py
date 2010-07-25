@@ -33,10 +33,11 @@ def walk(exp, index):
 		index += 1
 		return index
 
-# Given a homogenous list l, returns the items of that list concatenated together.
-# Eg: collapse(["f", "o", "o"]) == "foo"
-def collapse(l):
-	return reduce(lambda x, y: x + y, l)
+def collapse(list):
+	""" Given an homogenous list, returns the items of that list
+	concatenated together. """
+
+	return reduce(lambda x, y: x + y, list)
 
 def inflate(exp):
 	""" Given a compound bencoded expression, as a string, returns the
