@@ -51,6 +51,7 @@ def inflate(exp):
 	if ben_type(exp) == int:
 		# Take the integer, and inflate the rest.
 		end = exp.find("e")	# The end of the integer.
+
 		x = exp[:end + 1]
 		xs = inflate( exp[end + 1: ] )
 
@@ -58,22 +59,17 @@ def inflate(exp):
 	elif ben_type(exp) == str:
 		# Take the string, and inflate the rest
 		strlength = int(exp[0])	# The length of the string.
+
 		x = exp[:strlength + 2]
 		xs = inflate ( exp[strlength+ 2: ])
 
-	# The expression starts with a list.
-	elif ben_type(exp) == list:
-		# Take the list, inflate the rest.
-		endlist = walk(exp, 1)	# Find the end of the list.
-		x = exp[:endlist]
-		xs = inflate( exp[endlist:] )
+	# The expression starts with a dict, or a list.
+	# We can treat both the same way.
+	elif ben_type(exp) == list or ben_type(exp) == dict:
+		end = walk(exp, 1)	# Find the end of the data type
 
-	# The expression starts with a dictionary.
-	elif ben_type(exp) == dict:
-		# Take the list, inflate the rest.
-		enddict = walk(exp, 1)	# Find the end of the dict.
-		x = exp[:enddict]
-		xs = inflate( exp[enddict:] )
+		x = exp[:end]
+		xs = inflate(exp[end:])
 
 	# Returns the first item, with the inflated rest of the list.
 	return [x] + xs
