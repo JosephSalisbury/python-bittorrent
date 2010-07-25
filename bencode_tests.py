@@ -80,6 +80,12 @@ class Inflate(unittest.TestCase):
 		self.n = bencode.inflate("i1ei2ei3e")
 		self.assertEqual(self.n, ["i1e", "i2e", "i3e"])
 
+	def test_long_string(self):
+		""" Test that an expression containing a long string is
+		inflated correctly. """
+		self.n = bencode.inflate("i1e15:averylongstringi2e")
+		self.assertEqual(self.n, ["i1e", "15:averylongstring", "i2e"])
+
 	def test_mixed_simple(self):
 		""" Test that a mixed simple expression is inflated correctly. """
 		self.n = bencode.inflate("3:onei1e3:twoi2e")
