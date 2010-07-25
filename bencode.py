@@ -2,9 +2,10 @@
 
 import types
 
-def walk(exp, index):
+def walk(exp, index = 1):
 	""" Given a compound bencoded expression, as a string, returns
-	the index of the end of the first dict, or list. """
+	the index of the end of the first dict, or list.
+	Start at an index of 1, to avoid the start of the actual list. """
 
 	# The expression starts with an integer.
 	if exp[index] == "i":
@@ -72,7 +73,7 @@ def inflate(exp):
 	# The expression starts with a dict, or a list.
 	# We can treat both the same way.
 	elif ben_type(exp) == list or ben_type(exp) == dict:
-		end = walk(exp, 1)	# Find the end of the data type
+		end = walk(exp)	# Find the end of the data type
 
 		x = exp[:end]
 		xs = inflate(exp[end:])
