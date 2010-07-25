@@ -80,10 +80,15 @@ class Inflate(unittest.TestCase):
 		self.n = bencode.inflate("i1ei2ei3e")
 		self.assertEqual(self.n, ["i1e", "i2e", "i3e"])
 
-	def test_mixed(self):
-		""" Test that a mixed expression is inflated correctly. """
+	def test_mixed_simple(self):
+		""" Test that a mixed simple expression is inflated correctly. """
 		self.n = bencode.inflate("3:onei1e3:twoi2e")
 		self.assertEqual(self.n, ["3:one", "i1e", "3:two", "i2e"])
+
+	def test_mixed_complex(self):
+		""" Test that a mixed complex expression is inflated correctly. """
+		self.n = bencode.inflate("li1ei2eed3:key5:valuee")
+		self.assertEqual(self.n, ["li1ei2ee", "d3:key5:valuee"])
 
 class Ben_Type(unittest.TestCase):
 	""" Check the function ben_type() works correctly. """
