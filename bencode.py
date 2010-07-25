@@ -12,12 +12,12 @@ def walk(exp, index):
 
 	# If it's a string, collapse the number tokens, then skip that far forward
 	elif exp[index].isdigit():
-		colon = exp.find(":", index)
+		colon = exp.find(":", index)	# We only want before the first colon
 		num = [a for a in exp[index:colon] if a.isdigit() ]
 		n = int(collapse(num))
 
-		# Skip the number of characters, the length of it, and the colon
-		return walk(exp, index + n + len(num) + 1)
+		# Skip the length of the number, the colon, and the length of the string
+		return walk(exp, index + len(num) + 1 + n)
 
 	# If it's a sublist, walk through that to the end, then keep going
 	elif exp[index] == "l":
