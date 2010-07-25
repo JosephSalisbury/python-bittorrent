@@ -2,6 +2,22 @@
 
 import types
 
+def stringlength(string, index = 0):
+	""" Given a bencoded expression, starting with a string, returns
+	the length of the string. """
+
+	try:
+		colon = string.find(":", index)	# Find the colon, ending the number.
+	except ValueError:
+		raise BencodeError("Decode", "Malformed expression", data)
+
+	# Return a list of the number characters.
+	num = [a for a in string[index:colon] if a.isdigit() ]
+	n = int(collapse(num))	# Collapse them, and turn them into an int.
+
+	# Return the length of the number, colon, and the string length.
+	return len(num) + 1 + n
+
 def walk(exp, index = 1):
 	""" Given a compound bencoded expression, as a string, returns
 	the index of the end of the first dict, or list.
@@ -15,13 +31,9 @@ def walk(exp, index = 1):
 
 	# The expression starts with a string.
 	elif exp[index].isdigit():
-		# Find the end of the string.
-		colon = exp.find(":", index)
-		num = [a for a in exp[index:colon] if a.isdigit() ]
-		n = int(collapse(num))
-
+		strlength = stringlength(exp, index)
 		# Skip to the end of the string, keep walking.
-		return walk(exp, index + len(num) + 1 + n)
+		return walk(exp, index + strlength)
 
 	# The expression starts with a list or dict.
 	elif exp[index] == "l" or exp[index] == "d":
@@ -59,13 +71,7 @@ def inflate(exp):
 
 	# The expression starts with a string.
 	elif ben_type(exp) == str:
-		# Take the digits before the colon, and collapse them into an
-		# integer.
-		colon = exp.find(":")
-		num = [a for a in exp[:colon] if a.isdigit() ]
-		n = int(collapse(num))	# The length of the string.
-		# The string length is the length of the number, colon, and string.
-		strlength = len(num) + 1 + n
+		strlength = stringlength(exp)
 
 		x = exp[:strlength]
 		xs = inflate(exp[strlength:])
@@ -161,19 +167,16 @@ def decode_str(string):
 	except AssertionError:
 		raise BencodeError("Decode", "Badly formed expression", string)
 
-	# Spin through and collect all the number tokens, before the colon
+	# We want everything past the first colon
 	try:
 		colon = string.find(":")
-		num = [a for a in string[:colon] if a.isdigit()]
 	except ValueError:
 		raise BencodeError("Decode", "Badly formed expression", string)
+	# Up to the end of the string
+	strlength = stringlength(string)
 
-	# Reduce the number characters into one string, then integerise it
-	n = int(collapse(num))
-
-	lenNum = len(num) + 1	# Including the colon, as well
 	# The subsection of the string we want
-	t = string[lenNum:n+lenNum]
+	t = string[colon + 1:strlength]
 
 	return t
 
