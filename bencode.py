@@ -39,47 +39,62 @@ def collapse(l):
 	return reduce(lambda x, y: x + y, l)
 
 def inflate(exp):
+	""" Given a compound bencoded expression, as a string, returns the
+	individual data types within the string as items in a list.
+	Note, that lists and dicts will come out not inflated. """
+
+	# Base case, for an empty expression.
 	if exp == "":
 		return []
 
+	# The expression starts with an integer.
 	if ben_type(exp) == int:
-		end = exp.find("e")
-		# The length of the integer is the same as the index of the ending character
-		# This means its the only integer in the expression, and we just return it
+		end = exp.find("e")	# The end of the integer.
+		# If the expression only contains the int, just return that.
 		if end == len(exp) - 1:
 			return [exp]
 		else:
-		# Otherwise, take the first integer, and inflate the rest
+			# Otherwise, take the integer, and inflate the rest.
 			x = exp[:end + 1]
 			xs = inflate( exp[end + 1: ] )
 
+	# The expression starts with a string.
 	elif ben_type(exp) == str:
+		# If the expression only contains the string, just return that.
 		if len(exp) == int(exp[0]) + 2:
 			return [exp]
 		else:
-			strlength = int(exp[0])
+			# Otherwise, take the string, and inflate the rest
+			strlength = int(exp[0])	# The length of the string.
 
 			x = exp[:strlength + 2]
 			xs = inflate ( exp[strlength+ 2: ])
 
+	# The expression starts with a list.
 	elif ben_type(exp) == list:
-		if len(exp) == 2:	# Just an empty list
+		# If the expression is just an empty list, return that.
+		if len(exp) == 2:
 			return [exp]
 		else:
-			endlist = walk(exp, 1)
+			# Otherwise, take the list, inflate the rest.
+			endlist = walk(exp, 1)	# Find the end of the list.
 
 			x = exp[:endlist]
 			xs = inflate( exp[endlist:] )
 
+	# The expression starts with a dictionary.
 	elif ben_type(exp) == dict:
-		if len(exp) == 2:	# Empty dictionary
+		# If the expression is just an empty dict, return that.
+		if len(exp) == 2:
 			return [exp]
 		else:
+			# Otherwise, take the list, inflate the rest.
 			enddict = walk(exp, 1)
 
 			x = exp[:enddict]
 			xs = inflate( exp[enddict:] )
 
+	# Returns the first item, with the inflated rest of the list.
 	return [x] + xs
 
 # Given a bencoded expression, returns what type it is
