@@ -120,26 +120,28 @@ def encode_int(num):
 
 	return "i" + str(num) + "e"
 
-# Decode an integer
-def decode_int(data):
+def decode_int(num):
+	""" Given a bencoded string of a number, returns the integer. """
+
 	try:
-		assert ben_type(data) == int
+		assert ben_type(num) == int
 	except AssertionError:
-		raise BencodeError("Decode", "Malformed expression", data)
+		raise BencodeError("Decode", "Malformed expression", num)
 
+	# Find the end constant of the integer. It may not exist, which would lead
+	# to an error being raised.
 	try:
-		end = data.index("e")	# Find the end of the integer
+		end = num.index("e")
 	except ValueError:
-		raise BencodeError("Decode", "Cannot find end of integer expression", data)
+		raise BencodeError("Decode", "Cannot find end of integer expression", num)
 
-	# Remove the substring we want
-	t = data[1:end]
+	t = num[1:end]	# Remove the substring we want.
 
-	# Quick check for leading zeros, which are not allowed
+	# Check for leading zeros, which are not allowed.
 	if len(t) > 1 and t[0] == "0":
-		raise BencodeError("Decode", "Malformed expression, leading zeros", data)
+		raise BencodeError("Decode", "Malformed expression, leading zeros", num)
 
-	return int(t)			# Integerise it
+	return int(t)	# Return an integer.
 
 # Encode a string
 def encode_str(data):
