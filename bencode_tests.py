@@ -218,6 +218,11 @@ class Decode_Str(unittest.TestCase):
 		self.n = bencode.decode_str("4:test")
 		self.assertEqual(self.n, "test")
 
+	def test_long_string(self):
+		""" Test that a long string is decoded correctly. """
+		self.n = bencode.decode_str("15:averylongstring")
+		self.assertEqual(self.n, "averylongstring")
+
 	def test_string_length(self):
 		""" Test that string length is respected. """
 		self.n = bencode.decode_str("1:abc")
