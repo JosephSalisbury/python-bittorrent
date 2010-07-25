@@ -12,12 +12,8 @@ def walk(exp, index):
 
 	# If it's a string, collapse the number tokens, then skip that far forward
 	elif exp[index].isdigit():
-		num = []
-		for x in exp[index:]:
-			if x.isdigit():
-				num.append(x)
-			else:
-				break
+		colon = exp.find(":", index)
+		num = [a for a in exp[index:colon] if a.isdigit() ]
 		n = int(collapse(num))
 
 		# Skip the number of characters, the length of it, and the colon
