@@ -53,15 +53,20 @@ def inflate(exp):
 		end = exp.find("e")	# The end of the integer.
 
 		x = exp[:end + 1]
-		xs = inflate( exp[end + 1: ] )
+		xs = inflate(exp[end + 1:])
 
 	# The expression starts with a string.
 	elif ben_type(exp) == str:
-		# Take the string, and inflate the rest
-		strlength = int(exp[0])	# The length of the string.
+		# Take the digits before the colon, and collapse them into an
+		# integer.
+		colon = exp.find(":")
+		num = [a for a in exp[:colon] if a.isdigit() ]
+		n = int(collapse(num))	# The length of the string.
+		# The string length is the length of the number, colon, and string.
+		strlength = len(num) + 1 + n
 
-		x = exp[:strlength + 2]
-		xs = inflate ( exp[strlength+ 2: ])
+		x = exp[:strlength]
+		xs = inflate(exp[strlength:])
 
 	# The expression starts with a dict, or a list.
 	# We can treat both the same way.
