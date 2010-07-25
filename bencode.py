@@ -81,16 +81,16 @@ def inflate(exp):
 	# Returns the first item, with the inflated rest of the list.
 	return [x] + xs
 
-# Given a bencoded expression, returns what type it is
-#Eg: ben_type("i1e") == "int"
-def ben_type(expression):
-	if expression[0] == "i":
+def ben_type(exp):
+	""" Given a bencoded expression, returns what type it is. """
+
+	if exp[0] == "i":
 		return int
-	elif expression[0].isdigit():
+	elif exp[0].isdigit():
 		return str
-	elif expression[0] == "l":
+	elif exp[0] == "l":
 		return list
-	elif expression[0] == "d":
+	elif exp[0] == "d":
 		return dict
 
 # Raised if an error occurs during encoding / decoding
