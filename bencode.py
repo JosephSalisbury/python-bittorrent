@@ -143,35 +143,37 @@ def decode_int(num):
 
 	return int(t)	# Return an integer.
 
-# Encode a string
-def encode_str(data):
-	try:
-		assert type(data) == str
-	except AssertionError:
-		raise BencodeError("Encode", "Malformed expression", data)
+def encode_str(string):
+	""" Given a string, returns a bencoded string of that string. """
 
-	return str(len(data)) + ":" + data
+	try:
+		assert type(string) == str
+	except AssertionError:
+		raise BencodeError("Encode", "Malformed expression", string)
+
+	# Return the length of the string, the colon, and the string.
+	return str(len(string)) + ":" + string
 
 # Decode a string
-def decode_str(data):
+def decode_str(string):
 	try:
-		assert ben_type(data) == str
+		assert ben_type(string) == str
 	except AssertionError:
-		raise BencodeError("Decode", "Badly formed expression", data)
+		raise BencodeError("Decode", "Badly formed expression", string)
 
 	# Spin through and collect all the number tokens, before the colon
 	try:
-		colon = data.find(":")
-		num = [a for a in data[:colon] if a.isdigit()]
+		colon = string.find(":")
+		num = [a for a in string[:colon] if a.isdigit()]
 	except ValueError:
-		raise BencodeError("Decode", "Badly formed expression", data)
+		raise BencodeError("Decode", "Badly formed expression", string)
 
 	# Reduce the number characters into one string, then integerise it
 	n = int(collapse(num))
 
 	lenNum = len(num) + 1	# Including the colon, as well
 	# The subsection of the string we want
-	t = data[lenNum:n+lenNum]
+	t = string[lenNum:n+lenNum]
 
 	return t
 
