@@ -1,4 +1,16 @@
-# bencode.py -- deals with bencoding
+#	bencode.py -- deals with bencoding
+#	Written by Joe Salisbury <salisbury.joseph@gmail.com>
+#
+#	You are free to use this code in anyway you see fit, on the basis
+#	that if it is used, modified, or distributed, proper accreditation
+#	of the original author remains.
+
+""" This module deals with the encoding and decoding of bencoded data.
+decode() and encode() are the major functions available, to decode
+and encode data. """
+
+# Note: Bencoding specification:
+# http://www.bittorrent.org/beps/bep_0003.html
 
 import types
 
