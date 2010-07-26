@@ -28,3 +28,10 @@ def make_tracker_request(torrent):
 	response = urllib.urlopen(tracker_url + "?" + data).read()
 
 	return bencode.decode(response)
+
+class Torrent():
+	def __init__(self, torrent_file):
+		self.data = read_torrent_file(torrent_file)
+
+	def tracker_request(self):
+		make_tracker_request(self.data)
