@@ -14,9 +14,16 @@ class Torrent():
 		with open(torrent_file) as file:
 			self.data = decode(file.read())
 
+	def get_announce_url(self):
+		return self.data["announce"]
+
+	def get_info(self):
+		return self.data["info"]
+
 	def tracker_request(self):
 		# Hash the info file, for the tracker
-		info = sha1(encode(self.data["info"])).hexdigest()
+		info = self.get_info()
+		info = sha1(encode(info)).hexdigest()
 
 		# Generate a tracker GET request.
 		payload = {"info_hash" : info,
@@ -28,7 +35,7 @@ class Torrent():
 		payload = urlencode(payload)
 
 		# Send the request
-		tracker_url = self.data["announce"]
+		tracker_url = self.get_announce_url()
 		response = urlopen(tracker_url + "?" + payload).read()
 
 		self.tracker_response = bencode.decode(response)
