@@ -5,6 +5,9 @@ from bencode import encode, decode
 from hashlib import sha1
 from urllib import urlencode, urlopen
 
+def make_torrent(file = file, tracker = tracker):
+	pass
+
 class Torrent():
 	def __init__(self, torrent_file):
 		self.data = {}
