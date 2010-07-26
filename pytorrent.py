@@ -14,16 +14,17 @@ def read_torrent_file(torrent_file):
 	return bencode.decode(contents)
 
 def make_tracker_request(torrent):
-	info = sha1( bencode.encode( torrent["info"] )).digest()
+	info = sha1(bencode.encode(torrent["info"])).hexdigest()
 
-	data = {"info_hash" : info}
+	data = {"info_hash" : info,
+			"peer_id" : "ABCDEFGHIJKLMNOPQRST",
+			"port" : 6969,
+			"uploaded" : 0,
+			"downloaded" : 0,
+			"left" : None}
 	data = urllib.urlencode(data)
 
 	tracker_url = torrent["announce"]
 	response = urllib.urlopen(tracker_url + "?" + data).read()
 
-	print response
-
-def r():
-	t = read_torrent_file("test.torrent")
-	make_tracker_request(t)
+	return bencode.decode(response)
