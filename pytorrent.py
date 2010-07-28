@@ -20,6 +20,12 @@ class Torrent():
 	def get_info(self):
 		return self.data["info"]
 
+	def get_tracker_response(self):
+		if not self.tracker_response:
+			self.make_tracker_request()
+
+		return self.tracker_response
+
 	def make_tracker_request(self):
 		# Hash the info file, for the tracker
 		info = self.get_info()
