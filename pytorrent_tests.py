@@ -11,6 +11,10 @@ class Torrent(unittest.TestCase):
 		""" Read a simple torrent in. """
 		self.torrent = pytorrent.Torrent("test.torrent")
 
+	def test_error_on_no_torrent(self):
+		""" Test that an error is raised when no torrent is present. """
+		self.assertRaises(IOError, pytorrent.Torrent.read_torrent_file, "nofile.torrent")
+
 	def test_data_present(self):
 		""" Test that data is present in the torrent. """
 		self.assertTrue(self.torrent.data)

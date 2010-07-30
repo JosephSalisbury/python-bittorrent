@@ -7,28 +7,17 @@ from urllib import urlencode, urlopen
 
 class Torrent():
 	def __init__(self, torrent_file):
-		self.data = {}
-		self.tracker_response = {}
+		self.data = self.read_torrent_file(torrent_file)
+		self.tracker_response = self.make_tracker_request()
 
+	def read_torrent_file(self, torrent_file):
 		# Read and decode the torrent file's contents
 		with open(torrent_file) as file:
-			self.data = decode(file.read())
-
-	def get_announce_url(self):
-		return self.data["announce"]
-
-	def get_info(self):
-		return self.data["info"]
-
-	def get_tracker_response(self):
-		if not self.tracker_response:
-			self.make_tracker_request()
-
-		return self.tracker_response
+			return decode(file.read())
 
 	def make_tracker_request(self):
 		# Hash the info file, for the tracker
-		info = self.get_info()
+		info = self.data["info"]
 		info = sha1(encode(info)).digest()
 
 		# Generate a tracker GET request.
@@ -42,7 +31,7 @@ class Torrent():
 		payload = urlencode(payload)
 
 		# Send the request
-		tracker_url = self.get_announce_url()
+		tracker_url = self.data["announce"]
 		response = urlopen(tracker_url + "?" + payload).read()
 
-		self.tracker_response = decode(response)
+		return decode(response)
