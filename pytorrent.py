@@ -25,6 +25,28 @@ def read_torrent_file(torrent_file):
 	with open(torrent_file) as file:
 		return decode(file.read())
 
+def make_tracker_request(info, tracker_url):
+	""" Given a torrent info, and tracker_url, returns the tracker
+	response. """
+
+	# Hash the info file, for the tracker
+	info = sha1(encode(info)).digest()
+
+	# Generate a tracker GET request.
+	payload = {"info_hash" : info,
+			"peer_id" : "ABCDEFGHIJKLMNOPQRST",
+			"port" : 6881,
+			"uploaded" : 0,
+			"downloaded" : 0,
+			"left" : 1000,
+			"compact" : 0}
+	payload = urlencode(payload)
+
+	# Send the request
+	response = urlopen(tracker_url + "?" + payload).read()
+
+	return decode(response)
+
 def get_peers(peers):
 	""" Return a list of IPs and ports, given a binary list of
 	peers, from a tracker response. """
@@ -42,29 +64,8 @@ def decode_port(port):
 class Torrent():
 	def __init__(self, torrent_file):
 		self.data = read_torrent_file(torrent_file)
-		self.tracker_response = self.make_tracker_request()
+		self.tracker_response = make_tracker_request(self.data["info"], self.data["announce"])
 		self.peers = get_peers(self.tracker_response["peers"])
-
-	def make_tracker_request(self):
-		# Hash the info file, for the tracker
-		info = self.data["info"]
-		info = sha1(encode(info)).digest()
-
-		# Generate a tracker GET request.
-		payload = {"info_hash" : info,
-				"peer_id" : "ABCDEFGHIJKLMNOPQRST",
-				"port" : 6881,
-				"uploaded" : 0,
-				"downloaded" : 0,
-				"left" : 1000,
-				"compact" : 0}
-		payload = urlencode(payload)
-
-		# Send the request
-		tracker_url = self.data["announce"]
-		response = urlopen(tracker_url + "?" + payload).read()
-
-		return decode(response)
 
 if __name__ == "__main__":
 	t = Torrent("test.torrent")
