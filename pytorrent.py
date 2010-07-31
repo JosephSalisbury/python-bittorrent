@@ -58,6 +58,7 @@ class Torrent():
 
 		return peers
 
-t = Torrent("test.torrent")
-p = t.get_peers(t.tracker_response)
-print "PEERS:", p
+if __name__ == "__main__":
+	t = Torrent("test.torrent")
+	p = t.get_peers(t.tracker_response)
+	print "PEERS:", p
