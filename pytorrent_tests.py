@@ -34,6 +34,20 @@ class Torrent_Read(unittest.TestCase):
 		# If we have announce, we have read correctly.
 		self.assertTrue("announce" in self.n.keys())
 
+class Tracker_Request(unittest.TestCase):
+	""" Test that tracker requests works correctly. """
+
+	def setUp(self):
+		self.torrent = pytorrent.Torrent("test.torrent")
+
+	def test(self):
+		self.n = pytorrent.make_tracker_request(self.torrent.data["info"], self.torrent.data["announce"])
+		# If we have peers, the request has worked.
+		self.assertTrue("peers" in self.n.keys())
+
+	def tearDown(self):
+		self.torrent = None
+
 class Torrent(unittest.TestCase):
 	""" Test that that Torrent() class works correctly. """
 
