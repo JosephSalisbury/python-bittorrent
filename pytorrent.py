@@ -3,7 +3,20 @@
 
 from bencode import encode, decode
 from hashlib import sha1
+from socket import inet_ntoa
 from urllib import urlencode, urlopen
+
+def slice(string, n):
+	""" Given a string and a number n, cuts the string up, returns a
+	list of strings, all size n. """
+
+	temp = []
+	i = n
+	while i < len(string):
+		temp.append(string[(i-n):i])
+		i += n
+
+	return temp
 
 class Torrent():
 	def __init__(self, torrent_file):
@@ -35,3 +48,16 @@ class Torrent():
 		response = urlopen(tracker_url + "?" + payload).read()
 
 		return decode(response)
+
+	def get_peers(self, tracker_response):
+		""" Return a list of peer IP addresses, given a tracker response. """
+
+		peers = tracker_response["peers"]
+		peers = slice(peers, 6)
+		peers = map(inet_ntoa, peers)
+
+		return peers
+
+t = Torrent("test.torrent")
+p = t.get_peers(t.tracker_response)
+print "PEERS:", p
