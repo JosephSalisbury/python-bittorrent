@@ -25,6 +25,15 @@ class Decode_Port(unittest.TestCase):
 		self.n = pytorrent.decode_port("\x1a\xe1")
 		self.assertEqual(self.n, 6881)
 
+class Torrent_Read(unittest.TestCase):
+	""" Test that reading torrents works correctly. """
+
+	def test(self):
+		""" Test that a torrent file is read correctly. """
+		self.n = pytorrent.read_torrent_file("test.torrent")
+		# If we have announce, we have read correctly.
+		self.assertTrue("announce" in self.n.keys())
+
 class Torrent(unittest.TestCase):
 	""" Test that that Torrent() class works correctly. """
 
