@@ -19,6 +19,21 @@ def slice(string, n):
 
 	return temp
 
+def read_torrent_file(torrent_file):
+	""" Given a .torrent file, returns its decoded contents. """
+
+	with open(torrent_file) as file:
+		return decode(file.read())
+
+def get_peers(peers):
+	""" Return a list of IPs and ports, given a binary list of
+	peers, from a tracker response. """
+
+	peers = slice(peers, 6)	# Cut the response at the end of every peer
+	peers = [(inet_ntoa(p[:4]), decode_port(p[4:])) for p in peers]
+
+	return peers
+
 def decode_port(port):
 	""" Given a big-endian encoded port, returns the numerical port. """
 
@@ -26,13 +41,9 @@ def decode_port(port):
 
 class Torrent():
 	def __init__(self, torrent_file):
-		self.data = self.read_torrent_file(torrent_file)
+		self.data = read_torrent_file(torrent_file)
 		self.tracker_response = self.make_tracker_request()
-
-	def read_torrent_file(self, torrent_file):
-		# Read and decode the torrent file's contents
-		with open(torrent_file) as file:
-			return decode(file.read())
+		self.peers = get_peers(self.tracker_response["peers"])
 
 	def make_tracker_request(self):
 		# Hash the info file, for the tracker
@@ -55,16 +66,5 @@ class Torrent():
 
 		return decode(response)
 
-	def get_peers(self, peers):
-		""" Return a list of IPs and ports, given a binary list of
-		peers, from a tracker response. """
-
-		peers = slice(peers, 6)	# Cut the response at the end of every peer
-		peers = [(inet_ntoa(p[:4]), decode_port(p[4:])) for p in peers]
-
-		return peers
-
 if __name__ == "__main__":
 	t = Torrent("test.torrent")
-	p = t.get_peers(t.tracker_response["peers"])
-	print "PEERS:", p
