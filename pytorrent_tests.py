@@ -2,6 +2,7 @@
 # pytorrent_tests.py -- testing the pytorrent module
 
 import unittest
+import types
 import pytorrent
 
 class Slice(unittest.TestCase):
@@ -34,22 +35,8 @@ class Torrent_Read(unittest.TestCase):
 		# If we have announce, we have read correctly.
 		self.assertTrue("announce" in self.n.keys())
 
-class Tracker_Request(unittest.TestCase):
-	""" Test that tracker requests works correctly. """
-
-	def setUp(self):
-		self.torrent = pytorrent.Torrent("test.torrent")
-
-	def test(self):
-		self.n = pytorrent.make_tracker_request(self.torrent.data["info"], self.torrent.data["announce"])
-		# If we have peers, the request has worked.
-		self.assertTrue("peers" in self.n.keys())
-
-	def tearDown(self):
-		self.torrent = None
-
 class Torrent(unittest.TestCase):
-	""" Test that that Torrent() class works correctly. """
+	""" Test that that Torrent() class, et al. works correctly. """
 
 	def setUp(self):
 		""" Read a simple torrent in. """
@@ -58,6 +45,22 @@ class Torrent(unittest.TestCase):
 	def test_data_present(self):
 		""" Test that data is present in the torrent. """
 		self.assertTrue(self.torrent.data)
+
+	def test_tracker_request(self):
+		""" Test that tracker requests work. """
+		info = self.torrent.data["info"]
+		announce = self.torrent.data["announce"]
+
+		self.n = pytorrent.make_tracker_request(info, announce)
+		# If we have peers, the request has worked.
+		self.assertTrue("peers" in self.n.keys())
+
+	def test_get_peers(self):
+		""" Test that decoding binary peers works. """
+		peers = self.torrent.tracker_response["peers"]
+
+		self.peers = pytorrent.get_peers(peers)
+		self.assertTrue(type(self.peers) == list)
 
 	def tearDown(self):
 		""" Remove the torrent. """
