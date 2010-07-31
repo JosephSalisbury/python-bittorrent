@@ -12,7 +12,7 @@ def slice(string, n):
 
 	temp = []
 	i = n
-	while i < len(string):
+	while i <= len(string):
 		temp.append(string[(i-n):i])
 		i += n
 
