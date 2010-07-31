@@ -4,6 +4,13 @@
 import unittest
 import pytorrent
 
+class Slice(unittest.TestCase):
+	""" Test that the slice() function works correctly. """
+
+	def test_simple(self):
+		self.n = pytorrent.slice("abc", 1)
+		self.assertEqual(self.n, ["a", "b", "c"])
+
 class Torrent(unittest.TestCase):
 	""" Test that that Torrent() class works correctly. """
 
