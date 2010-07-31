@@ -8,8 +8,14 @@ class Slice(unittest.TestCase):
 	""" Test that the slice() function works correctly. """
 
 	def test_simple(self):
+		""" Test that a one character slice works. """
 		self.n = pytorrent.slice("abc", 1)
 		self.assertEqual(self.n, ["a", "b", "c"])
+
+	def test_longer(self):
+		""" Test that a longer slice works. """
+		self.n = pytorrent.slice("abcdefghi", 3)
+		self.assertEqual(self.n, ["abc", "def", "ghi"])
 
 class Torrent(unittest.TestCase):
 	""" Test that that Torrent() class works correctly. """
