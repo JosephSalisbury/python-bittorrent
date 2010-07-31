@@ -17,6 +17,14 @@ class Slice(unittest.TestCase):
 		self.n = pytorrent.slice("abcdefghi", 3)
 		self.assertEqual(self.n, ["abc", "def", "ghi"])
 
+class Decode_Port(unittest.TestCase):
+	""" Test that the decode_port() function works correctly. """
+
+	def test(self):
+		""" Test that a port is decoded correctly. """
+		self.n = pytorrent.decode_port("\x1a\xe1")
+		self.assertEqual(self.n, 6881)
+
 class Torrent(unittest.TestCase):
 	""" Test that that Torrent() class works correctly. """
 
