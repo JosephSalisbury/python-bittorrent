@@ -73,12 +73,22 @@ def decode_port(port):
 
 	return unpack("!H", port)[0]
 
+def generate_handshake(info_hash, peer_id):
+	""" Returns a handshake. """
+
+	protocol_id = "BitTorrent protocol"
+	len_id = str(len(protocol_id))
+	reserved = "00000000"
+
+	return len_id + protocol_id + reserved + info_hash + peer_id
+
 class Torrent():
 	def __init__(self, torrent_file):
 		self.data = read_torrent_file(torrent_file)
 
-		self.peer_id = generate_peer_id()
 		self.info_hash = sha1(encode(self.data["info"])).digest()
+		self.peer_id = generate_peer_id()
+		self.handshake = generate_handshake(self.info_hash, self.peer_id)
 
 		self.tracker_response = make_tracker_request(self.info_hash, self.peer_id, self.data["announce"])
 		self.peers = get_peers(self.tracker_response["peers"])
