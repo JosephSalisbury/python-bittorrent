@@ -75,7 +75,7 @@ class Torrent(unittest.TestCase):
 
 	def test_tracker_request(self):
 		""" Test that tracker requests work. """
-		info = self.torrent.data["info"]
+		info = self.torrent.info_hash
 		announce = self.torrent.data["announce"]
 		peer_id = self.torrent.peer_id
 

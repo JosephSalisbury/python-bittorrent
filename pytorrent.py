@@ -44,9 +44,6 @@ def make_tracker_request(info, peer_id, tracker_url):
 	""" Given a torrent info, and tracker_url, returns the tracker
 	response. """
 
-	# Hash the info file, for the tracker
-	info = sha1(encode(info)).digest()
-
 	# Generate a tracker GET request.
 	payload = {"info_hash" : info,
 			"peer_id" : peer_id,
@@ -81,7 +78,9 @@ class Torrent():
 		self.data = read_torrent_file(torrent_file)
 
 		self.peer_id = generate_peer_id()
-		self.tracker_response = make_tracker_request(self.data["info"], self.peer_id, self.data["announce"])
+		self.info_hash = sha1(encode(self.data["info"])).digest()
+
+		self.tracker_response = make_tracker_request(self.info_hash, self.peer_id, self.data["announce"])
 		self.peers = get_peers(self.tracker_response["peers"])
 
 if __name__ == "__main__":
