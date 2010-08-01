@@ -35,6 +35,33 @@ class Torrent_Read(unittest.TestCase):
 		# If we have announce, we have read correctly.
 		self.assertTrue("announce" in self.n.keys())
 
+class Generate_Peer_ID(unittest.TestCase):
+	""" Test that peer ids contain necessary items. """
+
+	def setUp(self):
+		""" Generate a peer id. """
+		self.peer_id = pytorrent.generate_peer_id()
+
+	def test_first_dash(self):
+		""" Test that the first character is a dash. """
+		self.assertEqual(self.peer_id[0], "-")
+
+	def test_client_id(self):
+		""" Test that the client id is within the id. """
+		self.assertEqual(self.peer_id[1:3], "PY")
+
+	def test_final_dash(self):
+		""" Test that the second dash is within the id. """
+		self.assertEqual(self.peer_id[7], "-")
+
+	def test_length(self):
+		""" Test that the length of the peer id is correct. """
+		self.assertTrue(len(self.peer_id) == 20)
+
+	def tearDown(self):
+		""" Remove the peer id. """
+		self.peer_id = None
+
 class Torrent(unittest.TestCase):
 	""" Test that that Torrent() class, et al. works correctly. """
 
@@ -50,8 +77,9 @@ class Torrent(unittest.TestCase):
 		""" Test that tracker requests work. """
 		info = self.torrent.data["info"]
 		announce = self.torrent.data["announce"]
+		peer_id = self.torrent.peer_id
 
-		self.n = pytorrent.make_tracker_request(info, announce)
+		self.n = pytorrent.make_tracker_request(info, peer_id, announce)
 		# If we have peers, the request has worked.
 		self.assertTrue("peers" in self.n.keys())
 

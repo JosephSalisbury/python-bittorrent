@@ -3,6 +3,7 @@
 
 from bencode import encode, decode
 from hashlib import sha1
+from random import choice
 from socket import inet_ntoa
 from struct import unpack
 from urllib import urlencode, urlopen
@@ -25,7 +26,21 @@ def read_torrent_file(torrent_file):
 	with open(torrent_file) as file:
 		return decode(file.read())
 
-def make_tracker_request(info, tracker_url):
+def generate_peer_id():
+	""" Returns a 20-byte peer id. """
+
+	# As Azureus style seems most popular, we'll be using that.
+	client_id = "PY"
+	version_number = "0001"
+
+	# Generate a 12 character long string of random numbers.
+	random_string = ""
+	while len(random_string) != 12:
+		random_string = random_string + choice("1234567890")
+
+	return "-" + client_id + version_number + "-" + random_string
+
+def make_tracker_request(info, peer_id, tracker_url):
 	""" Given a torrent info, and tracker_url, returns the tracker
 	response. """
 
@@ -34,7 +49,7 @@ def make_tracker_request(info, tracker_url):
 
 	# Generate a tracker GET request.
 	payload = {"info_hash" : info,
-			"peer_id" : "ABCDEFGHIJKLMNOPQRST",
+			"peer_id" : peer_id,
 			"port" : 6881,
 			"uploaded" : 0,
 			"downloaded" : 0,
@@ -64,7 +79,9 @@ def decode_port(port):
 class Torrent():
 	def __init__(self, torrent_file):
 		self.data = read_torrent_file(torrent_file)
-		self.tracker_response = make_tracker_request(self.data["info"], self.data["announce"])
+
+		self.peer_id = generate_peer_id()
+		self.tracker_response = make_tracker_request(self.data["info"], self.peer_id, self.data["announce"])
 		self.peers = get_peers(self.tracker_response["peers"])
 
 if __name__ == "__main__":
