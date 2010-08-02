@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # pytorrent.py
 
-from bencode import encode, decode
+from bencode import decode, encode
 from hashlib import sha1
 from random import choice
-from socket import inet_ntoa
-from struct import unpack
+import socket
+from struct import pack, unpack
 from urllib import urlencode, urlopen
 
 def slice(string, n):
@@ -64,7 +64,7 @@ def get_peers(peers):
 	peers, from a tracker response. """
 
 	peers = slice(peers, 6)	# Cut the response at the end of every peer
-	peers = [(inet_ntoa(p[:4]), decode_port(p[4:])) for p in peers]
+	peers = [(socket.inet_ntoa(p[:4]), decode_port(p[4:])) for p in peers]
 
 	return peers
 
@@ -82,6 +82,18 @@ def generate_handshake(info_hash, peer_id):
 
 	return len_id + protocol_id + reserved + info_hash + peer_id
 
+def send_recv_handshake(handshake, host, port):
+	""" Sends a handshake, returns the data we get back. """
+
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.connect((host, port))
+	s.send(handshake)
+
+	data = s.recv(len(handshake))
+	s.close()
+
+	return data
+
 class Torrent():
 	def __init__(self, torrent_file):
 		self.data = read_torrent_file(torrent_file)
@@ -92,6 +104,3 @@ class Torrent():
 
 		self.tracker_response = make_tracker_request(self.info_hash, self.peer_id, self.data["announce"])
 		self.peers = get_peers(self.tracker_response["peers"])
-
-if __name__ == "__main__":
-	t = Torrent("test.torrent")
