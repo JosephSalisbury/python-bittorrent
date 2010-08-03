@@ -6,7 +6,13 @@ from hashlib import sha1
 from random import choice
 import socket
 from struct import pack, unpack
+from time import time
+import types
 from urllib import urlencode, urlopen
+
+CLIENT_NAME = "pytorrent"
+CLIENT_ID = "PY"
+CLIENT_VERSION = "0001"
 
 def slice(string, n):
 	""" Given a string and a number n, cuts the string up, returns a
@@ -20,6 +26,25 @@ def slice(string, n):
 
 	return temp
 
+def make_torrent_file(file = None, tracker = None, comment = None):
+	""" Returns a torrent file. """
+
+	if not file:
+		raise TypeError("make_torrent_file requires at least one file, non given.")
+	if not tracker:
+		raise TypeError("make_torrent_file requires at least one tracker, non given.")
+
+	torrent = {}
+
+	torrent["announce"] = tracker
+
+	torrent["creation date"] = int(time())
+	torrent["created by"] = CLIENT_NAME
+	if comment:
+		torrent["comment"] = comment
+
+	return torrent
+
 def read_torrent_file(torrent_file):
 	""" Given a .torrent file, returns its decoded contents. """
 
@@ -30,15 +55,12 @@ def generate_peer_id():
 	""" Returns a 20-byte peer id. """
 
 	# As Azureus style seems most popular, we'll be using that.
-	client_id = "PY"
-	version_number = "0001"
-
 	# Generate a 12 character long string of random numbers.
 	random_string = ""
 	while len(random_string) != 12:
 		random_string = random_string + choice("1234567890")
 
-	return "-" + client_id + version_number + "-" + random_string
+	return "-" + CLIENT_ID + CLIENT_VERSION + "-" + random_string
 
 def make_tracker_request(info, peer_id, tracker_url):
 	""" Given a torrent info, and tracker_url, returns the tracker
