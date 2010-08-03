@@ -36,7 +36,13 @@ def make_torrent_file(file = None, tracker = None, comment = None):
 
 	torrent = {}
 
-	torrent["announce"] = tracker
+	# We only have one tracker, so that's the announce
+	if type(tracker) != list:
+		torrent["announce"] = tracker
+	# Multiple trackers, first is announce, and all go in announce-list
+	elif type(tracker) == list:
+		torrent["announce"] = tracker[0]
+		torrent["announce-list"] = [[t] for t in tracker]
 
 	torrent["creation date"] = int(time())
 	torrent["created by"] = CLIENT_NAME
