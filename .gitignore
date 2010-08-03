@@ -1,3 +1,4 @@
-test.txt
+test_server.py
+*.iso
 *.torrent
 *.pyc
