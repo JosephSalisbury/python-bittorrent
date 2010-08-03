@@ -2,7 +2,7 @@
 # pytorrent.py
 
 from bencode import decode, encode
-from hashlib import sha1
+from hashlib import md5, sha1
 from random import choice
 import socket
 from struct import pack, unpack
@@ -26,8 +26,36 @@ def slice(string, n):
 
 	return temp
 
+def collapse(data):
+	""" Given an homogenous list, returns the items of that list
+	concatenated together. """
+
+	return reduce(lambda x, y: x + y, data)
+
+def make_info_dict(file):
+	""" Returns the info dictionary for a torrent file. """
+
+	with open(file) as f:
+		contents = f.read()
+
+	piece_length = 524288
+
+	info = {}
+
+	info["piece length"] = piece_length
+	info["length"] = len(contents)
+	info["name"] = file
+	info["md5sum"] = md5(file).hexdigest()
+
+	# Generate the pieces
+	pieces = slice(contents, piece_length)
+	pieces = [ sha1(p).digest() for p in pieces ]
+	info["pieces"] = collapse(pieces)
+
+	return info
+
 def make_torrent_file(file = None, tracker = None, comment = None):
-	""" Returns a torrent file. """
+	""" Returns the bencoded contents of a torrent file. """
 
 	if not file:
 		raise TypeError("make_torrent_file requires at least one file, non given.")
@@ -42,6 +70,7 @@ def make_torrent_file(file = None, tracker = None, comment = None):
 	# Multiple trackers, first is announce, and all go in announce-list
 	elif type(tracker) == list:
 		torrent["announce"] = tracker[0]
+		# And for some reason, each needs its own list
 		torrent["announce-list"] = [[t] for t in tracker]
 
 	torrent["creation date"] = int(time())
@@ -49,7 +78,9 @@ def make_torrent_file(file = None, tracker = None, comment = None):
 	if comment:
 		torrent["comment"] = comment
 
-	return torrent
+	torrent["info"] = make_info_dict(file)
+
+	return encode(torrent)
 
 def read_torrent_file(torrent_file):
 	""" Given a .torrent file, returns its decoded contents. """
