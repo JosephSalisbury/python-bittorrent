@@ -24,6 +24,12 @@ def slice(string, n):
 		temp.append(string[(i-n):i])
 		i += n
 
+	try:	# Add on any stragglers
+		if string[(i-n)] != "":
+			temp.append(string[(i-n):])
+	except IndexError:
+		pass
+
 	return temp
 
 def collapse(data):
@@ -38,7 +44,7 @@ def make_info_dict(file):
 	with open(file) as f:
 		contents = f.read()
 
-	piece_length = 524288
+	piece_length = 524288	# TODO: This should change dependent on file size
 
 	info = {}
 
