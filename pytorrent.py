@@ -136,7 +136,7 @@ def get_peers(peers):
 def decode_port(port):
 	""" Given a big-endian encoded port, returns the numerical port. """
 
-	return unpack("!H", port)[0]
+	return unpack(">H", port)[0]
 
 def generate_handshake(info_hash, peer_id):
 	""" Returns a handshake. """
