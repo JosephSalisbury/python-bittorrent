@@ -92,8 +92,8 @@ class Tracker():
 			# Generate a response
 			response = {}
 			response["interval"] = INTERVAL
-			response["complete"] = 10
-			response["incomplete"] = 10
+			response["complete"] = 0
+			response["incomplete"] = 0
 			response["peers"] = peer_list(torrents[info_hash], compact)
 
 			print "RESPONSE:", response
