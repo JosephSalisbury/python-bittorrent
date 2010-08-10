@@ -1,7 +1,7 @@
 # pytorrent-tracker.py
 # A bittorrent tracker
 
-import BaseHTTPServer
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import parse_qs
 
 HOST = ""
@@ -9,7 +9,7 @@ PORT = 9001
 
 torrents = {}
 
-class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class RequestHandler(BaseHTTPRequestHandler):
 	def do_GET(s):
 		package = parse_qs(s.path[1:])
 		client_address = s.client_address
@@ -32,7 +32,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 class Tracker():
 	def __init__(self):
-		self.server_class = BaseHTTPServer.HTTPServer
+		self.server_class = HTTPServer
 		self.httpd = self.server_class((HOST, PORT), RequestHandler)
 
 	def run(self):
