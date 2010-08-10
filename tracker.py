@@ -2,10 +2,14 @@
 # A bittorrent tracker
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from bencode import encode
 from pickle import dump, load
+from socket import inet_aton
+from struct import pack
 from urlparse import parse_qs
 
 torrents = {}	# Global so RequestHandler can reach it
+INTERVAL = 1800
 
 def read_torrent_db(torrent_db):
 	try:
@@ -18,26 +22,52 @@ def write_torrent_db(torrent_db, data):
 	with open(torrent_db, "w") as db:
 		dump(data, db)
 
+def make_compact_peer_list(peer_list):
+	""" Return a compact peer string, given a list of peer details. """
+
+	peer_string = ""
+	for peer in peer_list:
+		ip = inet_aton(peer[1])
+		port = pack(">H", int(peer[2]))
+
+		peer_string += (ip + port)
+
+	return peer_string
+
 class Tracker():
 	class RequestHandler(BaseHTTPRequestHandler):
 		def do_GET(s):
 			package = parse_qs(s.path[1:])
-			client_address = s.client_address
+			print "PACKAGE:", package
 
 			info_hash = package["info_hash"][0]
+			compact = package["compact"][0]
+
+			ip = s.client_address[0]
+			port = package["port"][0]
+			peer_id = package["peer_id"][0]
 
 			if not info_hash in torrents:
-				torrents[info_hash] = [client_address]
+				torrents[info_hash] = [(peer_id, ip, port)]
 			else:
-				torrents[info_hash].append(client_address)
+				torrents[info_hash].append((peer_id, ip, port))
 
 			print "DB:", torrents
 
 			s.send_response(200)
 			s.end_headers()
-			s.wfile.write("LOL")
 
-	def __init__(self, host = "", port = 9001, torrent_db = "tracker.db", inmemory = True):
+			response = {}
+			response["interval"] = INTERVAL
+			response["complate"] = 10
+			response["incomplete"] = 10
+
+			if compact:
+				response["peers"] = make_compact_peer_list(torrents[info_hash])
+
+			s.wfile.write(encode(response))
+
+	def __init__(self, host = "", port = 9001, interval = 1800, torrent_db = "tracker.db", inmemory = True):
 		self.host = host
 		self.port = port
 
