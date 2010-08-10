@@ -30,13 +30,19 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		s.end_headers()
 		s.wfile.write("LOL")
 
+class Tracker():
+	def __init__(self):
+		self.server_class = BaseHTTPServer.HTTPServer
+		self.httpd = self.server_class((HOST, PORT), RequestHandler)
+
+	def run(self):
+		try:
+			self.httpd.serve_forever()
+		except KeyboardInterrupt:
+			pass
+
+		self.httpd.server_close()
+
 if __name__ == "__main__":
-	server_class = BaseHTTPServer.HTTPServer
-	httpd = server_class((HOST, PORT), RequestHandler)
-
-	try:
-		httpd.serve_forever()
-	except KeyboardInterrupt:
-		pass
-
-	httpd.server_close()
+	t = Tracker()
+	t.run()
