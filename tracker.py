@@ -37,13 +37,16 @@ class Tracker():
 			s.end_headers()
 			s.wfile.write("LOL")
 
-	def __init__(self, host = "", port = 9001, torrent_db = "tracker.db"):
+	def __init__(self, host = "", port = 9001, torrent_db = "tracker.db", inmemory = True):
 		self.host = host
 		self.port = port
 
-		self.torrent_db = torrent_db
-		global torrents
-		torrents = read_torrent_db(self.torrent_db)
+		self.inmemory = inmemory
+
+		if not self.inmemory:	# If not in memory, load the db, otherwise it stays as {}
+			self.torrent_db = torrent_db
+			global torrents
+			torrents = read_torrent_db(self.torrent_db)
 
 		self.server_class = HTTPServer
 		self.httpd = self.server_class((self.host, self.port), self.RequestHandler)
@@ -55,7 +58,8 @@ class Tracker():
 			pass
 
 	def __del__(self):
-		write_torrent_db(self.torrent_db, torrents)
+		if not self.inmemory:	# If not in memory, persist the database
+			write_torrent_db(self.torrent_db, torrents)
 		self.httpd.server_close()
 
 def main():
