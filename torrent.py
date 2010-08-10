@@ -93,7 +93,7 @@ def make_tracker_request(info, peer_id, tracker_url):
 			"uploaded" : 0,
 			"downloaded" : 0,
 			"left" : 1000,
-			"compact" : 0}
+			"compact" : 1}
 	payload = urlencode(payload)
 
 	# Send the request
