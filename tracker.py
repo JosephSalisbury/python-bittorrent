@@ -9,31 +9,30 @@ PORT = 9001
 
 torrents = {}
 
-class RequestHandler(BaseHTTPRequestHandler):
-	def do_GET(s):
-		package = parse_qs(s.path[1:])
-		client_address = s.client_address
-
-		info_hash = package["info_hash"][0]
-
-		if not info_hash in torrents:
-			print "NO HASH"
-			torrents[info_hash] = [client_address]
-		else:
-			print "HAS HASH"
-			torrents[info_hash].append(client_address)
-
-		print "DB:", torrents
-
-
-		s.send_response(200)
-		s.end_headers()
-		s.wfile.write("LOL")
-
 class Tracker():
+	class RequestHandler(BaseHTTPRequestHandler):
+		def do_GET(s):
+			package = parse_qs(s.path[1:])
+			client_address = s.client_address
+
+			info_hash = package["info_hash"][0]
+
+			if not info_hash in torrents:
+				print "NO HASH"
+				torrents[info_hash] = [client_address]
+			else:
+				print "HAS HASH"
+				torrents[info_hash].append(client_address)
+
+			print "DB:", torrents
+
+			s.send_response(200)
+			s.end_headers()
+			s.wfile.write("LOL")
+
 	def __init__(self):
 		self.server_class = HTTPServer
-		self.httpd = self.server_class((HOST, PORT), RequestHandler)
+		self.httpd = self.server_class((HOST, PORT), self.RequestHandler)
 
 	def run(self):
 		try:
