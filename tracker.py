@@ -33,6 +33,18 @@ def decode_request(path):
 
 	return parse_qs(path)
 
+def add_peer(info_hash, peer_id, ip, port):
+	""" Add the peer to the torrent database. """
+
+	# If we've heard of this, just add the peer
+	if info_hash in torrents:
+		# Only add the peer if they're not already in the database
+		if (peer_id, ip, port) not in torrents[info_hash]:
+			torrents[info_hash].append((peer_id, ip, port))
+	# Otherwise, add the info_hash and the peer
+	else:
+		torrents[info_hash] = [(peer_id, ip, port)]
+
 def make_compact_peer_list(peer_list):
 	""" Return a compact peer string, given a list of peer details. """
 
@@ -81,11 +93,7 @@ class Tracker():
 			port = package["port"][0]
 			peer_id = package["peer_id"][0]
 
-			# If we've heard of this, add the peer, else add the hash and the peer
-			if info_hash in torrents:
-				torrents[info_hash].append((peer_id, ip, port))
-			else:
-				torrents[info_hash] = [(peer_id, ip, port)]
+			add_peer(info_hash, peer_id, ip, port)
 
 			print "DB:", torrents
 
@@ -102,6 +110,8 @@ class Tracker():
 			s.send_response(200)
 			s.end_headers()
 			s.wfile.write(encode(response))
+
+			print
 
 	def __init__(self, host = "", port = 9001, interval = 1800, torrent_db = "tracker.db", inmemory = False):
 		self.host = host
