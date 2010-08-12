@@ -117,4 +117,22 @@ class Make_Expanded_Peer_List(unittest.TestCase):
 				{'ip': '100.100.100.100', \
 					'peer id': 'test2', 'port': 1000}])
 
+class Peer_List(unittest.TestCase):
+	""" Test that peer_list() dispatcher works correctly. """
+
+	def test_compact_list(self):
+		""" Test that a compact peer list dispatches. """
+
+		self.n = tracker.peer_list([("test1", "100.100.100.100", \
+			"1000")], True)
+		self.assertEqual(self.n, "dddd\x03\xe8")
+
+	def test_expanded_list(self):
+		""" Test that an expanded list dispatches. """
+
+		self.n = tracker.peer_list([("test1", "100.100.100.100", \
+			"1000")], False)
+		self.assertEqual(self.n, [{'ip': '100.100.100.100', \
+			'peer id': 'test1', 'port': 1000}])
+
 unittest.main()
