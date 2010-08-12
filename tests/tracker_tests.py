@@ -110,6 +110,7 @@ class Make_Expanded_Peer_List(unittest.TestCase):
 
 	def test_multiple_peers(self):
 		""" Test that multiple peers works correctly. """
+
 		self.n = tracker.make_peer_list \
 			([("test1", "100.100.100.100", "1000"), \
 				("test2", "100.100.100.100", "1000")])
