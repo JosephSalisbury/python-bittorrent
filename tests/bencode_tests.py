@@ -55,18 +55,6 @@ class Walk(unittest.TestCase):
 		self.n = bencode.walk(self.exp, 1)
 		self.assertEqual(self.exp[:self.n], "d3:subd3:key5:valueee")
 
-class Collapse(unittest.TestCase):
-	""" Check the function collapse() works correctly. """
-
-	def test_concatenation(self):
-		""" Test that characters are correctly concatenated. """
-		self.n = bencode.collapse(["t", "e", "s", "t"])
-		self.assertEqual(self.n, "test")
-
-	def test_exception_raised(self):
-		""" Test a TypeError is raised when concating different types. """
-		self.assertRaises(TypeError, bencode.collapse, [1, "a", True])
-
 class Inflate(unittest.TestCase):
 	""" Check the inflate() function works correctly. """
 
