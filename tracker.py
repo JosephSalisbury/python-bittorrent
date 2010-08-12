@@ -77,49 +77,50 @@ def peer_list(peer_list, compact):
 	else:
 		return make_peer_list(peer_list)
 
+class RequestHandler(BaseHTTPRequestHandler):
+	def do_GET(s):
+		# Decode the request
+		package = decode_request(s.path)
+
+		# Get the necessary info out of the request
+		info_hash = package["info_hash"][0]
+		compact = int(package["compact"][0])
+		ip = s.client_address[0]
+		port = package["port"][0]
+		peer_id = package["peer_id"][0]
+
+		add_peer(s.server.torrents, info_hash, peer_id, ip, port)
+
+		# Generate a response
+		response = {}
+		response["interval"] = s.server.interval
+		response["complete"] = 0
+		response["incomplete"] = 0
+		response["peers"] = peer_list(s.server.torrents[info_hash], compact)
+
+		# Send off the response
+		s.send_response(200)
+		s.end_headers()
+		s.wfile.write(encode(response))
+
+		print "PACKAGE:", package
+		print "DB:", s.server.torrents
+		print "RESPONSE:", response
+		print
+
+# Means each HTTP request is handled in a seperate thread.
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+	pass
+
 class Tracker():
-	class RequestHandler(BaseHTTPRequestHandler):
-		def do_GET(s):
-			# Decode the request
-			package = decode_request(s.path)
-
-			# Get the necessary info out of the request
-			info_hash = package["info_hash"][0]
-			compact = int(package["compact"][0])
-			ip = s.client_address[0]
-			port = package["port"][0]
-			peer_id = package["peer_id"][0]
-
-			add_peer(s.server.torrents, info_hash, peer_id, ip, port)
-
-			# Generate a response
-			response = {}
-			response["interval"] = s.server.interval
-			response["complete"] = 0
-			response["incomplete"] = 0
-			response["peers"] = peer_list(s.server.torrents[info_hash], compact)
-
-			# Send off the response
-			s.send_response(200)
-			s.end_headers()
-			s.wfile.write(encode(response))
-
-			print "PACKAGE:", package
-			print "DB:", s.server.torrents
-			print "RESPONSE:", response
-			print
-
 	def __init__(self, host = "", port = 9001, interval = 5, torrent_db = "tracker.db", inmemory = False):
 		self.host = host
 		self.port = port
 
 		self.inmemory = inmemory
 
-		class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-			""" LOL """
-
 		self.server_class = ThreadedHTTPServer
-		self.httpd = self.server_class((self.host, self.port), self.RequestHandler)
+		self.httpd = self.server_class((self.host, self.port), RequestHandler)
 
 		self.server_class.interval = interval
 
