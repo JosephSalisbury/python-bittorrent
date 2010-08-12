@@ -100,5 +100,3 @@ class Torrent(unittest.TestCase):
 	def tearDown(self):
 		""" Remove the torrent. """
 		self.torrent = None
-
-unittest.main()

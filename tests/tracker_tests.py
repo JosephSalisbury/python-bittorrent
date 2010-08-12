@@ -134,5 +134,3 @@ class Peer_List(unittest.TestCase):
 			"1000")], False)
 		self.assertEqual(self.n, [{'ip': '100.100.100.100', \
 			'peer id': 'test1', 'port': 1000}])
-
-unittest.main()

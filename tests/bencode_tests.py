@@ -405,5 +405,3 @@ class Decode(unittest.TestCase):
 		""" Test dictionaries are decoded correctly. """
 		self.n = bencode.decode("d3:key5:valuee")
 		self.assertEqual(self.n, {"key":"value"})
-
-unittest.main()
