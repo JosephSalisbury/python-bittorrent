@@ -66,4 +66,28 @@ class Add_Peer(unittest.TestCase):
 		self.assertEqual(self.db, \
 			{'test_hash': [('test', '100.100.100.100', 1000)]})
 
+class Make_Compact_Peer_List(unittest.TestCase):
+	""" Test that a compact peer list is correctly made. """
+
+	def test_empty_peer(self):
+		""" Test that an empty peer list works. """
+
+		self.n = tracker.make_compact_peer_list([])
+		self.assertEqual(self.n, "")
+
+	def test_one_peer(self):
+		""" Test that one peer works correctly. """
+
+		self.n = tracker.make_compact_peer_list \
+			([("test1", "100.100.100.100", "1000")])
+		self.assertEqual(self.n, "dddd\x03\xe8")
+
+	def test_multiple_peers(self):
+		""" Test that multiple peers works correctly. """
+
+		self.n = tracker.make_compact_peer_list \
+			([("test1", "100.100.100.100", "1000"), \
+				("test2", "100.100.100.100", "1000")])
+		self.assertEqual(self.n, "dddd\x03\xe8dddd\x03\xe8")
+
 unittest.main()
