@@ -5,6 +5,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from bencode import encode
 from pickle import dump, load
 from socket import inet_aton
+from SocketServer import ThreadingMixIn
 from struct import pack
 from urlparse import parse_qs
 
@@ -114,7 +115,10 @@ class Tracker():
 
 		self.inmemory = inmemory
 
-		self.server_class = HTTPServer
+		class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+			""" LOL """
+
+		self.server_class = ThreadedHTTPServer
 		self.httpd = self.server_class((self.host, self.port), self.RequestHandler)
 
 		self.server_class.interval = interval
