@@ -1,3 +1,5 @@
+LOL
+
 #	bencode.py -- deals with bencoding
 #	Written by Joe Salisbury <salisbury.joseph@gmail.com>
 #
