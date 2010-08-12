@@ -90,4 +90,31 @@ class Make_Compact_Peer_List(unittest.TestCase):
 				("test2", "100.100.100.100", "1000")])
 		self.assertEqual(self.n, "dddd\x03\xe8dddd\x03\xe8")
 
+class Make_Expanded_Peer_List(unittest.TestCase):
+	""" Test that an expanded peer list is correctly made. """
+
+	def test_empty_peer(self):
+		""" Test that an empty peer list works correctly. """
+
+		self.n = tracker.make_peer_list([])
+		self.assertEqual(self.n, [])
+
+	def test_one_peer(self):
+		""" Test that one peer works correctly. """
+
+		self.n = tracker.make_peer_list \
+			([("test1", "100.100.100.100", "1000")])
+		self.assertEqual(self.n, [{'ip': '100.100.100.100', \
+			'peer id': 'test1', 'port': 1000}])
+
+	def test_multiple_peers(self):
+		""" Test that multiple peers works correctly. """
+		self.n = tracker.make_peer_list \
+			([("test1", "100.100.100.100", "1000"), \
+				("test2", "100.100.100.100", "1000")])
+		self.assertEqual(self.n, [{'ip': '100.100.100.100', \
+			'peer id': 'test1', 'port': 1000}, \
+				{'ip': '100.100.100.100', \
+					'peer id': 'test2', 'port': 1000}])
+
 unittest.main()
