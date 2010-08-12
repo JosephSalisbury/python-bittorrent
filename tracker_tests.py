@@ -45,5 +45,25 @@ class Decode_Request(unittest.TestCase):
 		self.n = tracker.decode_request("/?key=value")
 		self.assertEqual(self.n, {"key":["value"]})
 
+class Add_Peer(unittest.TestCase):
+	""" Test that peers are correctly added to the tracker database. """
+
+	def test_unique_peer(self):
+		""" Test that a unique peer is added correctly. """
+
+		self.db = {}
+		tracker.add_peer(self.db, \
+			"test_hash", "test", "100.100.100.100", 1000)
+		self.assertEqual(self.db, \
+			{'test_hash': [('test', '100.100.100.100', 1000)]})
+
+	def test_duplicate_peer(self):
+		""" Test that a duplicated peer is not added. """
+
+		self.db = {'test_hash': [('test', '100.100.100.100', 1000)]}
+		tracker.add_peer(self.db, \
+			"test_hash", "test", "100.100.100.100", 1000)
+		self.assertEqual(self.db, \
+			{'test_hash': [('test', '100.100.100.100', 1000)]})
 
 unittest.main()
