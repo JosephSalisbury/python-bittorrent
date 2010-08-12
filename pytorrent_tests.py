@@ -5,6 +5,13 @@ import unittest
 import types
 import pytorrent
 
+class Decode_Expanded_Peers(unittest.TestCase):
+	""" Test that the decode_expanded_peers function works correctly. """
+	def test_simple(self):
+		""" Test that a one peer list works. """
+		self.n = pytorrent.decode_expanded_peers([{"ip":"127.0.0.1", "peer id":"testpeerid", "port":9001}])
+		self.assertEqual(self.n, [('127.0.0.1', 9001)])
+
 class Slice(unittest.TestCase):
 	""" Test that the slice() function works correctly. """
 
