@@ -28,6 +28,7 @@ class Write_Torrent_DB(unittest.TestCase):
 		with open("test.txt") as file:
 			self.n = pickle.load(file)
 		self.assertEqual(self.n, "test")
+		os.remove("test.txt")
 
 class Decode_Request(unittest.TestCase):
 	""" Test that we can decode GET requests correctly. """
