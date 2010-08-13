@@ -3,6 +3,7 @@
 
 import unittest
 import torrent
+import bencode
 import hashlib
 import os
 import util
@@ -42,3 +43,66 @@ class Make_Info_Dict(unittest.TestCase):
 
 		os.remove(self.filename)
 		self.d = None
+
+class Make_Torrent_File(unittest.TestCase):
+	""" Test that make_torrent_file() works correctly. """
+
+	def setUp(self):
+		""" Write a little torrent file. """
+
+		self.filename = "test.txt"
+		self.tracker = "http://tracker.com"
+		self.comment = "test"
+		with open(self.filename, "w") as self.file:
+			self.file.write("Test file.")
+		self.t = bencode.decode(torrent.make_torrent_file \
+			(file = self.filename, \
+			tracker = self.tracker, \
+			comment = self.comment))
+
+	def test_announce(self):
+		""" Test that the announce url is correct. """
+
+		self.assertEqual(self.tracker, self.t["announce"])
+
+	def test_announce_with_multiple_trackers(self):
+		""" Test that announce is correct with multiple tracker. """
+
+		self.t = bencode.decode(torrent.make_torrent_file \
+			(file = self.filename, \
+			tracker = [self.tracker, "http://tracker2.com"], \
+			comment = self.comment))
+		self.assertEqual(self.tracker, self.t["announce"])
+
+	def test_announce_list(self):
+		""" Test that the announce list is correct. """
+
+		self.t = bencode.decode(torrent.make_torrent_file \
+			(file = self.filename, \
+			tracker = [self.tracker, "http://tracker2.com"], \
+			comment = self.comment))
+		self.assertEqual([[self.tracker], ["http://tracker2.com"]], \
+			self.t["announce-list"])
+
+	def test_created_by(self):
+		""" Test that the created by field is correct. """
+
+		self.assertEqual("pytorrent", self.t["created by"])
+
+	def test_comment(self):
+		""" Test that the comment is correct. """
+
+		self.assertEqual(self.comment, self.t["comment"])
+
+	def test_info_dict(self):
+		""" Test that the info dict is correct. """
+
+		self.info = torrent.make_info_dict(self.filename)
+		self.assertEqual(self.info, self.t["info"])
+
+	def tearDown(self):
+		""" Remove the torrent, and the file. """
+
+		os.remove(self.filename)
+		self.t = None
+
