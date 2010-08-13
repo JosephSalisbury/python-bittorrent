@@ -245,3 +245,55 @@ class Get_Peers(unittest.TestCase):
 			[{'ip': '100.100.100.100', 'peer id': 'test1', \
 				'port': 1000}])
 		self.assertEqual(self.p, [("100.100.100.100", 1000)])
+
+class Decode_Port(unittest.TestCase):
+	""" Test that decode_port() works correctly. """
+
+	def test_port(self):
+		""" Test that the port 6881 is decoded correctly. """
+
+		self.p = torrent.decode_port("\x1a\xe1")
+		self.assertEqual(self.p, 6881)
+
+class Generate_Handshake(unittest.TestCase):
+	""" Test that generate_handshake() works. """
+
+	def setUp(self):
+		""" Generate a handshake. """
+
+		self.info_hash = "test_info_hash"
+		self.peer_id = "test_peer_id"
+		self.h = torrent.generate_handshake(self.info_hash, \
+			self.peer_id)
+
+	def test_length_protocol(self):
+		""" Test that the length of the protocol is correct. """
+
+		self.assertEqual("19", self.h[0:2])
+
+	def test_protocol_id(self):
+		""" Test the protocol id is correct. """
+
+		self.assertEqual("BitTorrent protocol", self.h[2:21])
+
+	def test_reserved(self):
+		""" Test that the reserved bytes are correct. """
+
+		self.assertEqual("00000000", self.h[21:29])
+
+	def test_info_hash(self):
+		""" Test that the info hash is correct. """
+
+		self.assertEqual(self.info_hash, \
+			self.h[29:29+len(self.info_hash)])
+
+	def test_peer_id(self):
+		""" Test that the peer id is correct. """
+
+		self.assertEqual(self.peer_id, self.h[29+len(self.info_hash): \
+			29+len(self.info_hash)+len(self.peer_id)])
+
+	def tearDown(self):
+		""" Remove the handshake. """
+
+		self.h = None
