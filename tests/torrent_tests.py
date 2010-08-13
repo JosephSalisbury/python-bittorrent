@@ -178,3 +178,31 @@ class Generate_Peer_ID(unittest.TestCase):
 		""" Remove the peerid. """
 
 		self.peer_id = None
+
+class Decode_Expanded_Peers(unittest.TestCase):
+	""" Test that decode_expanded_peers() works. """
+
+	def test_zero_peer(self):
+		""" Test that a zero peer list is decoded correctly. """
+
+		self.p = torrent.decode_expanded_peers([])
+		self.assertEqual(self.p, [])
+
+	def test_single_peer(self):
+		""" Test that a one peer list is decoded. """
+
+		self.p = torrent.decode_expanded_peers( \
+			[{'ip': '100.100.100.100', 'peer id': 'test1', \
+				'port': 1000}])
+		self.assertEqual(self.p, [("100.100.100.100", 1000)])
+
+	def test_multiple_peers(self):
+		""" Test that a two peer list is decoded correctly. """
+
+		self.p = torrent.decode_expanded_peers( \
+			[{'ip': '100.100.100.100', \
+			'peer id': 'test1', 'port': 1000}, \
+				{'ip': '100.100.100.100', \
+					'peer id': 'test2', 'port': 1000}])
+		self.assertEqual(self.p, [('100.100.100.100', 1000), \
+			('100.100.100.100', 1000)])
