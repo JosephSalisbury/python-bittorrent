@@ -3,10 +3,11 @@
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from bencode import encode
+from threading import Thread
 from pickle import dump, load
 from socket import inet_aton
-from SocketServer import ThreadingMixIn
 from struct import pack
+from urllib import urlopen
 from urlparse import parse_qs
 
 def read_torrent_db(torrent_db):
@@ -82,6 +83,10 @@ class RequestHandler(BaseHTTPRequestHandler):
 		# Decode the request
 		package = decode_request(s.path)
 
+		if not package:
+			s.send_error(403)
+			return
+
 		# Get the necessary info out of the request
 		info_hash = package["info_hash"][0]
 		compact = int(package["compact"][0])
@@ -103,47 +108,52 @@ class RequestHandler(BaseHTTPRequestHandler):
 		s.end_headers()
 		s.wfile.write(encode(response))
 
-		print "PACKAGE:", package
-		print "DB:", s.server.torrents
-		print "RESPONSE:", response
-		print
+		# print "PACKAGE:", package
+		# print "DB:", s.server.torrents
+		# print "RESPONSE:", response
+		# print
 
-# Means each HTTP request is handled in a seperate thread.
-class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-	pass
+	def log_message(self, format, *args):
+		return
 
 class Tracker():
-	def __init__(self, host = "", port = 9001, interval = 5, torrent_db = "tracker.db", inmemory = False):
+	def __init__(self, host = "", port = 80, interval = 5, torrent_db = "tracker.db", inmemory = False):
 		self.host = host
 		self.port = port
 
 		self.inmemory = inmemory
 
-		self.server_class = ThreadedHTTPServer
+		self.server_class = HTTPServer
 		self.httpd = self.server_class((self.host, self.port), RequestHandler)
 
 		self.server_class.interval = interval
-
 		if not self.inmemory:	# If not in memory, load the db, otherwise it stays as {}
 			self.torrent_db = torrent_db
 			self.server_class.torrents = read_torrent_db(self.torrent_db)
 		else:
 			self.server_class.torrents = {}
 
+	def runner(self):
+		while self.running:
+			self.httpd.handle_request()
+
 	def run(self):
-		try:
-			self.httpd.serve_forever()
-		except KeyboardInterrupt:
-			pass
+		self.running = True
+
+		self.thread = Thread(target = self.runner)
+		self.thread.start()
+
+	def send_dummy_request(self):
+		# To finish off httpd.handle_request()
+		address = "http://127.0.0.1:" + str(self.port)
+		urlopen(address)
+
+	def stop(self):
+		self.running = False
+		self.send_dummy_request()
+		self.thread.join()
 
 	def __del__(self):
 		if not self.inmemory:	# If not in memory, persist the database
 			write_torrent_db(self.torrent_db, self.server_class.torrents)
 		self.httpd.server_close()
-
-def main():
-	t = Tracker(inmemory = True)
-	t.run()
-
-if __name__ == "__main__":
-	main()
