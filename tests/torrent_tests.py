@@ -106,3 +106,25 @@ class Make_Torrent_File(unittest.TestCase):
 		os.remove(self.filename)
 		self.t = None
 
+class Read_Torrent_File():
+	""" Test that read_torrent_file() works. """
+
+	def setUp(self):
+		""" Write a little bencoded data to a file. """
+
+		self.filename = "test.txt"
+		self.data = bencode.encode([1, 2, 3])
+		with open(self.filename, "w") as self.file:
+			self.file.write(self.data)
+
+	def test_read(self):
+		""" Test that reading works correctly. """
+
+		self.data = torrent.read_torrent_file(self.filename)
+		self.assertEqual(self.data, [1, 2, 3])
+
+	def tearDown(self):
+		""" Delete the file. """
+
+		self.data = None
+		os.remove(self.filename)
