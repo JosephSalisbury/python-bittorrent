@@ -13,6 +13,7 @@ and encode data. """
 # http://www.bittorrent.org/beps/bep_0003.html
 
 import types
+from util import collapse
 
 def stringlength(string, index = 0):
 	""" Given a bencoded expression, starting with a string, returns
@@ -57,12 +58,6 @@ def walk(exp, index = 1):
 	elif exp[index] == "e":
 		index += 1	# Jump one, to include it, then return the index.
 		return index
-
-def collapse(data):
-	""" Given an homogenous list, returns the items of that list
-	concatenated together. """
-
-	return reduce(lambda x, y: x + y, data)
 
 def inflate(exp):
 	""" Given a compound bencoded expression, as a string, returns the
