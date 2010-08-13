@@ -87,7 +87,7 @@ class Make_Torrent_File(unittest.TestCase):
 	def test_created_by(self):
 		""" Test that the created by field is correct. """
 
-		self.assertEqual("pytorrent", self.t["created by"])
+		self.assertEqual(torrent.CLIENT_NAME, self.t["created by"])
 
 	def test_comment(self):
 		""" Test that the comment is correct. """
