@@ -28,7 +28,7 @@ def make_info_dict(file):
 	info["piece length"] = piece_length
 	info["length"] = len(contents)
 	info["name"] = file
-	info["md5sum"] = md5(file).hexdigest()
+	info["md5sum"] = md5(contents).hexdigest()
 
 	# Generate the pieces
 	pieces = slice(contents, piece_length)
