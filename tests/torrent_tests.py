@@ -206,3 +206,42 @@ class Decode_Expanded_Peers(unittest.TestCase):
 					'peer id': 'test2', 'port': 1000}])
 		self.assertEqual(self.p, [('100.100.100.100', 1000), \
 			('100.100.100.100', 1000)])
+
+class Decode_Binary_Peers(unittest.TestCase):
+	""" Test that decode_binary_peers() works. """
+
+	def test_zero_peer(self):
+		""" Test that a zero peer list is decoded correctly. """
+
+		self.p = torrent.decode_binary_peers([])
+		self.assertEqual(self.p, [])
+
+	def test_single_peer(self):
+		""" Test that a one peer list is decoded. """
+
+		self.p = torrent.decode_binary_peers("dddd\x03\xe8")
+		self.assertEqual(self.p, [("100.100.100.100", 1000)])
+
+	def test_multiple_peers(self):
+		""" Test that a two peer list is decoded correctly. """
+
+		self.p = torrent.decode_binary_peers("dddd\x03\xe8dddd\x03\xe8")
+		self.assertEqual(self.p, [('100.100.100.100', 1000), \
+			('100.100.100.100', 1000)])
+
+class Get_Peers(unittest.TestCase):
+	""" Test that get_peers() dispatches correctly. """
+
+	def test_binary_list(self):
+		""" Test that a binary list is dispatched correctly. """
+
+		self.p = torrent.get_peers("dddd\x03\xe8")
+		self.assertEqual(self.p, [("100.100.100.100", 1000)])
+
+	def test_expanded_list(self):
+		""" Test that an expanded list is dispatched correctly. """
+
+		self.p = torrent.get_peers( \
+			[{'ip': '100.100.100.100', 'peer id': 'test1', \
+				'port': 1000}])
+		self.assertEqual(self.p, [("100.100.100.100", 1000)])
