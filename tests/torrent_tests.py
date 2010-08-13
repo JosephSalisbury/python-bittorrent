@@ -106,7 +106,7 @@ class Make_Torrent_File(unittest.TestCase):
 		os.remove(self.filename)
 		self.t = None
 
-class Read_Torrent_File():
+class Read_Torrent_File(unittest.TestCase):
 	""" Test that read_torrent_file() works. """
 
 	def setUp(self):
@@ -128,3 +128,41 @@ class Read_Torrent_File():
 
 		self.data = None
 		os.remove(self.filename)
+
+class Generate_Peer_ID(unittest.TestCase):
+	""" Test that generate_peer_id() works correctly. """
+
+	def setUp(self):
+		""" Generate a peerid. """
+
+		self.peer_id = torrent.generate_peer_id()
+
+	def test_first_dash(self):
+		""" Test that the first character is a dash. """
+
+		self.assertEqual("-", self.peer_id[0])
+
+	def test_client_id(self):
+		""" Test that the client id is correct. """
+
+		self.assertEqual(torrent.CLIENT_ID, self.peer_id[1:3])
+
+	def test_client_version(self):
+		""" Test that the client version is correct. """
+
+		self.assertEqual(torrent.CLIENT_VERSION, self.peer_id[3:7])
+
+	def test_second_dash(self):
+		""" Test that the second dash is present. """
+
+		self.assertEqual("-", self.peer_id[7])
+
+	def test_length(self):
+		""" Test that the length of the id is correct. """
+
+		self.assertTrue(len(self.peer_id) == 20)
+
+	def tearDown(self):
+		""" Remove the peerid. """
+
+		self.peer_id = None
