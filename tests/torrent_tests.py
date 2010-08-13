@@ -100,6 +100,18 @@ class Make_Torrent_File(unittest.TestCase):
 		self.info = torrent.make_info_dict(self.filename)
 		self.assertEqual(self.info, self.t["info"])
 
+	def test_error_on_no_file(self):
+		""" Test that an error is raised when no file is given. """
+
+		self.assertRaises(TypeError, torrent.make_torrent_file, \
+			tracker = self.tracker)
+
+	def test_error_on_no_tracker(self):
+		""" Test that an error is raised when no tracker is given. """
+
+		self.assertRaises(TypeError, torrent.make_torrent_file, \
+			file = self.filename)
+
 	def tearDown(self):
 		""" Remove the torrent, and the file. """
 
