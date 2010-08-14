@@ -137,13 +137,13 @@ class Peer_List(unittest.TestCase):
 		self.assertEqual(self.n, [{'ip': '100.100.100.100', \
 			'peer id': 'test1', 'port': 1000}])
 
-class Tracker(unittest.TestCase):
+class Tracker_Test(unittest.TestCase):
 	""" Test that the Tracker() class works correctly. """
 
 	def setUp(self):
 		""" Start the tracker. """
 
-		self.port = 9003
+		self.port = 8888
 		self.inmemory = True
 		self.interval =10
 

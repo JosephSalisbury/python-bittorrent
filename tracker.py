@@ -158,6 +158,7 @@ class Tracker():
 			self.thread.join()
 
 	def __del__(self):
+		self.stop()
 		if not self.inmemory:	# If not in memory, persist the database
 			write_torrent_db(self.torrent_db, self.server_class.torrents)
 		self.httpd.server_close()
