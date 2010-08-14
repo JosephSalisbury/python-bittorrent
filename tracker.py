@@ -117,7 +117,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 		return
 
 class Tracker():
-	def __init__(self, host = "", port = 80, interval = 5, torrent_db = "tracker.db", inmemory = False):
+	def __init__(self, host = "", port = 9010, interval = 5, torrent_db = "tracker.db", inmemory = True):
 		self.host = host
 		self.port = port
 
@@ -125,6 +125,8 @@ class Tracker():
 
 		self.server_class = HTTPServer
 		self.httpd = self.server_class((self.host, self.port), RequestHandler)
+
+		self.running = False	# We're not running to begin with
 
 		self.server_class.interval = interval
 		if not self.inmemory:	# If not in memory, load the db, otherwise it stays as {}
@@ -138,10 +140,11 @@ class Tracker():
 			self.httpd.handle_request()
 
 	def run(self):
-		self.running = True
+		if not self.running:
+			self.running = True
 
-		self.thread = Thread(target = self.runner)
-		self.thread.start()
+			self.thread = Thread(target = self.runner)
+			self.thread.start()
 
 	def send_dummy_request(self):
 		# To finish off httpd.handle_request()
@@ -149,9 +152,10 @@ class Tracker():
 		urlopen(address)
 
 	def stop(self):
-		self.running = False
-		self.send_dummy_request()
-		self.thread.join()
+		if self.running:
+			self.running = False
+			self.send_dummy_request()
+			self.thread.join()
 
 	def __del__(self):
 		if not self.inmemory:	# If not in memory, persist the database
