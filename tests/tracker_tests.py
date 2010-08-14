@@ -143,43 +143,35 @@ class Tracker(unittest.TestCase):
 	def setUp(self):
 		""" Start the tracker. """
 
-		print "setUp"
-		self.port = 9001
+		self.port = 9003
 		self.inmemory = True
 		self.interval =10
 
 		self.tracker = tracker.Tracker(port = self.port, \
 			inmemory = self.inmemory, \
 			interval = self.interval)
-		self.tracker.run()
 
 	def test_port(self):
 		""" Test that the port is correct. """
 
-		print "port"
 		self.assertEqual(self.port, self.tracker.port)
 
 	def test_inmemory(self):
 		""" Test that inmemory is correct. """
 
-		print "memory"
 		self.assertEqual(self.inmemory, self.tracker.inmemory)
 
 	def test_interval(self):
 		""" Test that the interval is correct. """
 
-		print "interval"
 		self.assertEqual(self.interval, self.tracker.server_class.interval)
 
 	def test_database(self):
 		""" Test that the database is present. """
 
-		print "db"
 		self.assertEqual(self.tracker.server_class.torrents, {})
 
 	def tearDown(self):
 		""" Stop the tracker. """
 
-		print "tearDown"
-		self.tracker.stop()
 		self.tracker = None
