@@ -1,6 +1,7 @@
 python-bittorent
 =========
-python-bittorent is a BitTorrent library, written entirely in Python. \n It aims to be simple, clean, and efficient.
+python-bittorent is a BitTorrent library, written entirely in Python.
+It aims to be simple, clean, and efficient.
 
 bittorrent.py
 ------------
