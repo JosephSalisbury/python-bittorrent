@@ -7,7 +7,7 @@ bittorrent.py
 This module aims to make it *incredibly* simple to incorporate the BitTorrent protocol into your program.
 
 To run a Bittorrent tracker from within your application:
-`from bittorrent import Tracker  
-tracker = Tracker()  
-tracker.run()`
+    from bittorrent import Tracker
+    tracker = Tracker()
+    tracker.run()
 and you're done!
