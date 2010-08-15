@@ -118,6 +118,41 @@ class Make_Torrent_File(unittest.TestCase):
 		os.remove(self.filename)
 		self.t = None
 
+class Write_Torrent_File(unittest.TestCase):
+	""" Test that write_torrent_file() works. As this dispatches to
+	make_torrent_file, we only really need to test for errors, and that
+	the actual file exists. """
+
+	def setUp(self):
+		""" Write a little torrent file. """
+
+		self.torrent = "testing.torrent"
+		self.filename = "test.txt"
+		self.tracker = "http://tracker.com"
+		self.comment = "test"
+		with open(self.filename, "w") as self.file:
+			self.file.write("Test file.")
+		torrent.write_torrent_file(torrent = self.torrent,  \
+			file = self.filename, tracker = self.tracker, \
+				comment = self.comment)
+
+	def test_torrent_file(self):
+		""" Test that the torrent file has been written to. """
+
+		self.assertTrue(os.path.isfile(self.torrent))
+
+	def test_error_on_no_torrent(self):
+		""" Test that an error occurs when no torrent is given. """
+
+		self.assertRaises(TypeError, torrent.write_torrent_file, \
+			file = self.filename)
+
+	def tearDown(self):
+		""" Remove the file. """
+
+		self.t = None
+		os.remove("testing.torrent")
+
 class Read_Torrent_File(unittest.TestCase):
 	""" Test that read_torrent_file() works. """
 
