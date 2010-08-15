@@ -11,6 +11,9 @@ from urllib import urlopen
 from urlparse import parse_qs
 
 def read_torrent_db(torrent_db):
+	""" Load the data within the file torrent_db, or an empty dict if
+	the file is not present. """
+
 	try:
 		with open(torrent_db, "r") as db:
 			return load(db)
@@ -18,6 +21,8 @@ def read_torrent_db(torrent_db):
 		return {}
 
 def write_torrent_db(torrent_db, data):
+	""" Pickle data to the torrent_db file. """
+
 	with open(torrent_db, "w") as db:
 		dump(data, db)
 
@@ -57,7 +62,8 @@ def make_compact_peer_list(peer_list):
 	return peer_string
 
 def make_peer_list(peer_list):
-	""" Return a peer list suitable for the client, given the peer list. """
+	""" Return an expanded peer list suitable for the client, given
+	the peer list. """
 
 	peers = []
 	for peer in peer_list:
@@ -71,7 +77,8 @@ def make_peer_list(peer_list):
 	return peers
 
 def peer_list(peer_list, compact):
-	""" Depending on compact, dispatches to compact or expanded peer list functions. """
+	""" Depending on compact, dispatches to compact or expanded peer
+	list functions. """
 
 	if compact:
 		return make_compact_peer_list(peer_list)
@@ -80,6 +87,9 @@ def peer_list(peer_list, compact):
 
 class RequestHandler(BaseHTTPRequestHandler):
 	def do_GET(s):
+		""" Take a request, do some some database work, return a peer
+		list response. """
+
 		# Decode the request
 		package = decode_request(s.path)
 
@@ -89,7 +99,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 		# Get the necessary info out of the request
 		info_hash = package["info_hash"][0]
-		compact = int(package["compact"][0])
+		compact = bool(package["compact"][0])
 		ip = s.client_address[0]
 		port = package["port"][0]
 		peer_id = package["peer_id"][0]
@@ -101,7 +111,8 @@ class RequestHandler(BaseHTTPRequestHandler):
 		response["interval"] = s.server.interval
 		response["complete"] = 0
 		response["incomplete"] = 0
-		response["peers"] = peer_list(s.server.torrents[info_hash], compact)
+		response["peers"] = peer_list( \
+		s.server.torrents[info_hash], compact)
 
 		# Send off the response
 		s.send_response(200)
@@ -114,32 +125,44 @@ class RequestHandler(BaseHTTPRequestHandler):
 		# print
 
 	def log_message(self, format, *args):
+		""" Just supress logging. """
+
 		return
 
 class Tracker():
-	def __init__(self, host = "", port = 9010, interval = 5, torrent_db = "tracker.db", inmemory = True):
+	def __init__(self, host = "", port = 9010, interval = 5, \
+		torrent_db = "tracker.db", inmemory = True):
+		""" Read in the initial values, load the database. """
+
 		self.host = host
 		self.port = port
 
 		self.inmemory = inmemory
 
 		self.server_class = HTTPServer
-		self.httpd = self.server_class((self.host, self.port), RequestHandler)
+		self.httpd = self.server_class((self.host, self.port), \
+			RequestHandler)
 
 		self.running = False	# We're not running to begin with
 
 		self.server_class.interval = interval
-		if not self.inmemory:	# If not in memory, load the db, otherwise it stays as {}
+		# If not in memory, load the db, otherwise it stays as {}
+		if not self.inmemory:
 			self.torrent_db = torrent_db
-			self.server_class.torrents = read_torrent_db(self.torrent_db)
+			self.server_class.torrents = read_torrent_db( \
+				self.torrent_db)
 		else:
 			self.server_class.torrents = {}
 
 	def runner(self):
+		""" Keep handling requests, until told to stop. """
+
 		while self.running:
 			self.httpd.handle_request()
 
 	def run(self):
+		""" Start the runner, in a seperate thread. """
+
 		if not self.running:
 			self.running = True
 
@@ -147,18 +170,26 @@ class Tracker():
 			self.thread.start()
 
 	def send_dummy_request(self):
+		""" Send a dummy request to the server. """
+
 		# To finish off httpd.handle_request()
 		address = "http://127.0.0.1:" + str(self.port)
 		urlopen(address)
 
 	def stop(self):
+		""" Stop the thread, and join to it. """
+
 		if self.running:
 			self.running = False
 			self.send_dummy_request()
 			self.thread.join()
 
 	def __del__(self):
+		""" Stop the tracker thread, write the database. """
+
 		self.stop()
-		if not self.inmemory:	# If not in memory, persist the database
-			write_torrent_db(self.torrent_db, self.server_class.torrents)
+		# If not in memory, persist the database
+		if not self.inmemory:
+			write_torrent_db(self.torrent_db, \
+				self.server_class.torrents)
 		self.httpd.server_close()
