@@ -65,6 +65,19 @@ def make_torrent_file(file = None, tracker = None, comment = None):
 
 	return encode(torrent)
 
+def write_torrent_file(torrent = None, file = None, tracker = None, \
+	comment = None):
+	""" Largely the same as make_torrent_file(), except write the file
+	to the file named in torrent. """
+
+	if not torrent:
+		raise TypeError("write_torrent_file() requires a torrent filename to write to.")
+
+	data = make_torrent_file(file = file, tracker = tracker, \
+		comment = comment)
+	with open(torrent, "w") as torrent_file:
+		torrent_file.write(data)
+
 def read_torrent_file(torrent_file):
 	""" Given a .torrent file, returns its decoded contents. """
 
