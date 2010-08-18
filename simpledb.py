@@ -47,6 +47,13 @@ class Database():
 		value = dumps(value)
 		self.data[key] = value
 
+	def __repr__(self):
+		""" Represent the database. """
+
+		keys = self.data.keys()
+		items = [(loads(key), loads(self.data[key])) for key in keys]
+		return str(dict(items))
+
 	def clear(self):
 		""" Remove all data in the database. """
 
