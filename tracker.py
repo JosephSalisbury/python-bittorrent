@@ -3,6 +3,7 @@
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
+from logging import basicConfig, info, INFO
 from pickle import dump, load
 from socket import inet_aton
 from struct import pack
@@ -105,10 +106,9 @@ class RequestHandler(BaseHTTPRequestHandler):
 		s.end_headers()
 		s.wfile.write(encode(response))
 
-		# print "PACKAGE:", package
-		# print "DB:", s.server.torrents
-		# print "RESPONSE:", response
-		# print
+		# Log the request, and what we send back
+		info("PACKAGE: %s", package)
+		info("RESPONSE: %s", response)
 
 	def log_message(self, format, *args):
 		""" Just supress logging. """
@@ -117,7 +117,8 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 class Tracker():
 	def __init__(self, host = "", port = 9010, interval = 5, \
-		torrent_db = "tracker.db", inmemory = True):
+		torrent_db = "tracker.db", log = "tracker.log", \
+		inmemory = True):
 		""" Read in the initial values, load the database. """
 
 		self.host = host
@@ -132,6 +133,9 @@ class Tracker():
 		self.running = False	# We're not running to begin with
 
 		self.server_class.interval = interval
+
+		# Set logging info
+		basicConfig(filename = log, level = INFO)
 
 		# If not in memory, give the database a file, otherwise it
 		# will stay in memory
