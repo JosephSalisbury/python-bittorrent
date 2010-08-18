@@ -10,21 +10,7 @@ from struct import pack
 from urllib import urlopen
 from urlparse import parse_qs
 
-def read_torrent_db(torrent_db):
-	""" Load the data within the file torrent_db, or an empty dict if
-	the file is not present. """
-
-	try:
-		with open(torrent_db, "r") as db:
-			return load(db)
-	except IOError:	# No file
-		return {}
-
-def write_torrent_db(torrent_db, data):
-	""" Pickle data to the torrent_db file. """
-
-	with open(torrent_db, "w") as db:
-		dump(data, db)
+from simpledb import Database
 
 def decode_request(path):
 	""" Return the decoded request string. """
@@ -146,13 +132,13 @@ class Tracker():
 		self.running = False	# We're not running to begin with
 
 		self.server_class.interval = interval
-		# If not in memory, load the db, otherwise it stays as {}
+
+		# If not in memory, give the database a file, otherwise it
+		# will stay in memory
 		if not self.inmemory:
-			self.torrent_db = torrent_db
-			self.server_class.torrents = read_torrent_db( \
-				self.torrent_db)
+			self.server_class.torrents = Database(torrent_db)
 		else:
-			self.server_class.torrents = {}
+			self.server_class.torrents = Database(None)
 
 	def runner(self):
 		""" Keep handling requests, until told to stop. """
@@ -188,8 +174,4 @@ class Tracker():
 		""" Stop the tracker thread, write the database. """
 
 		self.stop()
-		# If not in memory, persist the database
-		if not self.inmemory:
-			write_torrent_db(self.torrent_db, \
-				self.server_class.torrents)
 		self.httpd.server_close()
