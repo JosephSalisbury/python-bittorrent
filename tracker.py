@@ -2,7 +2,6 @@
 # A bittorrent tracker
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from bencode import encode
 from threading import Thread
 from pickle import dump, load
 from socket import inet_aton
@@ -10,6 +9,7 @@ from struct import pack
 from urllib import urlopen
 from urlparse import parse_qs
 
+from bencode import encode
 from simpledb import Database
 
 def decode_request(path):
