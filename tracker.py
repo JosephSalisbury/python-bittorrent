@@ -171,6 +171,7 @@ class Tracker():
 
 		if self.running:
 			self.running = False
+
 			self.send_dummy_request()
 			self.thread.join()
 
