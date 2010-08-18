@@ -10,6 +10,9 @@
 # In a nutshell, the Database class acts like a dictionary, and
 # implements most of the built-in dictionaries functions. Except its
 # persistent!
+# As bsddb can only accept strings for keys and values, we need to
+# pickle everything before we use it. Therefore, most of the functions
+# dump the data, interface with the dict, then load the results.
 
 from bsddb import hashopen
 from pickle import dumps, loads
