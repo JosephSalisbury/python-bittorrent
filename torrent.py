@@ -1,7 +1,6 @@
 # torrent.py
 # Torrent file related utilities
 
-from bencode import decode, encode
 from hashlib import md5, sha1
 from random import choice
 import socket
@@ -11,6 +10,9 @@ from time import sleep, time
 import types
 from urllib import urlencode, urlopen
 from util import collapse, slice
+
+from bencode import decode, encode
+from btexceptions import NetworkError
 
 CLIENT_NAME = "pytorrent"
 CLIENT_ID = "PY"
@@ -178,7 +180,11 @@ class Torrent():
 
 		while self.running:
 			self.tracker_response = make_tracker_request(info_hash, peer_id, url)
-			self.peers = get_peers(self.tracker_response["peers"])
+
+			if "failure reason" not in self.tracker_response:
+				self.peers = get_peers(self.tracker_response["peers"])
+			else:
+				raise NetworkError("Tracker request failed.")
 			sleep(self.tracker_response["interval"])
 
 	def run(self):
