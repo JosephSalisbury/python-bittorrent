@@ -183,8 +183,6 @@ class Torrent():
 
 			if "failure reason" not in self.tracker_response:
 				self.peers = get_peers(self.tracker_response["peers"])
-			else:
-				raise NetworkError("Tracker request failed.")
 			sleep(self.tracker_response["interval"])
 
 	def run(self):
