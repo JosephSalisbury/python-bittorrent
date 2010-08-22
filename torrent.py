@@ -176,7 +176,7 @@ class Torrent():
 
 	def perform_tracker_request(self, url, info_hash, peer_id):
 		""" Make a tracker request to url, every interval seconds, using
-		the info_hash and peer_id, and decode the peers. """
+		the info_hash and peer_id, and decode the peers on a good response. """
 
 		while self.running:
 			self.tracker_response = make_tracker_request(info_hash, peer_id, url)
