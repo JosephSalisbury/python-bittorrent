@@ -6,7 +6,8 @@ from hashlib import md5, sha1
 from random import choice
 import socket
 from struct import pack, unpack
-from time import time
+from threading import Thread
+from time import sleep, time
 import types
 from urllib import urlencode, urlopen
 from util import collapse, slice
@@ -163,11 +164,38 @@ def send_recv_handshake(handshake, host, port):
 
 class Torrent():
 	def __init__(self, torrent_file):
+		self.running = False
+
 		self.data = read_torrent_file(torrent_file)
 
 		self.info_hash = sha1(encode(self.data["info"])).digest()
 		self.peer_id = generate_peer_id()
 		self.handshake = generate_handshake(self.info_hash, self.peer_id)
 
-		self.tracker_response = make_tracker_request(self.info_hash, self.peer_id, self.data["announce"])
-		self.peers = get_peers(self.tracker_response["peers"])
+	def perform_tracker_request(self, url, info_hash, peer_id):
+		""" Make a tracker request to url, every interval seconds, using
+		the info_hash and peer_id, and decode the peers. """
+
+		while self.running:
+			self.tracker_response = make_tracker_request(info_hash, peer_id, url)
+			self.peers = get_peers(self.tracker_response["peers"])
+			sleep(self.tracker_response["interval"])
+
+	def run(self):
+		""" Start the torrent running. """
+
+		if not self.running:
+			self.running = True
+
+			self.tracker_loop = Thread(target = self.perform_tracker_request, \
+				args = (self.data["announce"], self.info_hash, self.peer_id))
+			self.tracker_loop.start()
+
+	def stop(self):
+		""" Stop the torrent from running. """
+
+		if self.running:
+			self.running = False
+
+			self.tracker_loop.join()
+
