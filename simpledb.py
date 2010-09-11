@@ -40,6 +40,9 @@ class Database():
 		value = self.data[key]
 		return loads(value)
 
+	has_key = __contains__
+	get 	= __getitem__
+
 	def __setitem__(self, key, value):
 		""" Set the value of key to the value given. """
 
@@ -58,16 +61,6 @@ class Database():
 		""" Remove all data in the database. """
 
 		self.data.clear()
-
-	def has_key(self, key):
-		""" Return true if the database contains the key. """
-
-		return self.__contains__(key)
-
-	def get(self, key):
-		""" Return the value held by the key. """
-
-		return self.__getitem__(key)
 
 	def items(self):
 		""" Return a list of tuples of the keys and values. """
