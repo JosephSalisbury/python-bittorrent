@@ -4,6 +4,7 @@ python-bittorent is a BitTorrent library, written entirely in Python.
 It aims to be simple, clean, and efficient.
 
 Dependencies: (obviously) python, nose for testing.
+Also, as a final note, python-bittorent is very much *alpha* software right now.
 
 bittorrent.py
 ------------
