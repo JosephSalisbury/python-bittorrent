@@ -12,7 +12,6 @@ from urllib import urlencode, urlopen
 from util import collapse, slice
 
 from bencode import decode, encode
-from btexceptions import NetworkError
 
 CLIENT_NAME = "pytorrent"
 CLIENT_ID = "PY"
